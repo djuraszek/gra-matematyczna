@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_blue"
+    tools:context=".GamesListActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="88dp"
+        android:background="@drawable/board_up_2">
+
+        <Button
+            android:id="@+id/back_btn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="16dp"
+            android:background="@drawable/ic_back"
+            android:onClick="onBackPressed"/>
+
+        <include layout="@layout/component_sound_board" />
+
+        <include layout="@layout/component_money_board"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="90dp">
+
+        <GridView
+            android:id="@+id/gridView"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:numColumns="2"
+            android:footerDividersEnabled="false"
+            android:padding="1dp">
+
+        </GridView>
+
+
+    </RelativeLayout>
+</RelativeLayout>
