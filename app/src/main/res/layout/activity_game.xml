@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_blue"
+    tools:context=".GameActivity">
+
+
+    <include layout="@layout/component_sound_board" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="26dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginEnd="26dp"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="130dp"
+            android:background="@drawable/cloud">
+
+            <TextView
+                android:id="@+id/game_text"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="8dp"
+                android:gravity="center"
+                android:text="Ile jest kotków na obrazku?"
+                android:textAlignment="center"
+                android:textSize="@dimen/text_m" />
+
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <include
+        layout="@layout/answers_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/bottom_bar"
+        android:layout_centerHorizontal="true" />
+
+    <RelativeLayout
+        android:id="@+id/bottom_bar"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/board_down">
+
+        <Button
+            android:id="@+id/pause_btn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/ic_pause" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="2dp">
+
+
+        </LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>

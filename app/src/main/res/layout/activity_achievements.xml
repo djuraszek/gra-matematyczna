@@ -9,7 +9,24 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="88dp"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="50dp"
+        android:layout_marginTop="60dp">
+
+        <GridView
+            android:id="@+id/gridView"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:numColumns="2"
+            android:footerDividersEnabled="false"
+            android:padding="1dp">
+
+        </GridView>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
         android:background="@drawable/board_up_2">
 
         <Button
@@ -22,24 +39,9 @@
 
         <include layout="@layout/component_sound_board" />
 
-        <include layout="@layout/component_money_board"/>
     </RelativeLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="90dp">
 
-        <GridView
-            android:id="@+id/gridView"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:numColumns="2"
-            android:footerDividersEnabled="false"
-            android:padding="1dp">
+    <include layout="@layout/hearts_bar_achievements"/>
 
-        </GridView>
-
-
-    </RelativeLayout>
 </RelativeLayout>

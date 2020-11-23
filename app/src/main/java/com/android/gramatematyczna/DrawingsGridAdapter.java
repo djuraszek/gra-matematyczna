@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 
 import androidx.cardview.widget.CardView;
 
@@ -37,7 +38,11 @@ public class DrawingsGridAdapter  extends BaseAdapter {
         view = inflter.inflate(R.layout.item_grid_drawings, null); // inflate the layout
         CardView card = (CardView) view.findViewById(R.id.cardview); // get the reference of ImageView
         Drawable drawing = context.getDrawable(drawings[i]);
-        card.setBackground(drawing); // set logo images
+        ImageView background = (ImageView)view.findViewById(R.id.card_background);
+        ImageView lock = (ImageView)view.findViewById(R.id.item_lock);
+        ImageView download = (ImageView)view.findViewById(R.id.item_unlock);
+        background.setBackground(drawing); // set logo images
+//        card.setCardBackgroundColor(drawing); // set logo images
         return view;
     }
 }

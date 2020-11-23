@@ -5,15 +5,6 @@
     android:layout_centerInParent="true"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="600dp"
-        android:orientation="vertical"
-        android:layout_margin="16dp"
-        android:background="@drawable/board"
-        android:layout_centerInParent="true">
-
-    </LinearLayout>
 
 
 
