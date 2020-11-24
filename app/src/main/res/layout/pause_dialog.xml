@@ -1,0 +1,61 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="500dp"
+    android:layout_centerInParent="true"
+    android:background="@drawable/board">
+
+    <!--<ImageView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="550dp"-->
+        <!--android:layout_marginBottom="0dp"-->
+        <!--android:src="@drawable/board" />-->
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PRZERWA"
+        android:layout_marginTop="100dp"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textSize="@dimen/text_xxl"/>
+
+    <Button
+        android:id="@+id/resume_btn"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_margin="24dp"
+        android:layout_centerInParent="true"
+        android:layout_centerVertical="true"
+        android:onClick="buttonClick"
+        android:background="@drawable/ic_resume" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="70dp"
+        android:orientation="horizontal">
+
+
+        <Button
+            android:id="@+id/home_btn"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_margin="24dp"
+            android:onClick="buttonClick"
+            android:background="@drawable/ic_home" />
+
+        <Button
+            android:id="@+id/list_btn"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_margin="24dp"
+            android:onClick="buttonClick"
+            android:background="@drawable/ic_list" />
+    </LinearLayout>
+
+</RelativeLayout>

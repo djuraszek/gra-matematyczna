@@ -23,7 +23,7 @@ public class PreferencesManagement {
 
     BackgroundSoundService soundService;
 
-    PreferencesManagement(Context c) {
+    public PreferencesManagement(Context c) {
         context = c;
         View rootView = ((Activity) context).getWindow().getDecorView().findViewById(android.R.id.content);
 

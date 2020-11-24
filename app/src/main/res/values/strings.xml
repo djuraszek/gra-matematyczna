@@ -1,3 +1,24 @@
 <resources>
     <string name="app_name">GraMatematyczna</string>
+
+
+    <string-array name="colors_array">
+        <item>#F4FA58</item>
+        <item>#81DAF5</item>
+        <item>#F5A9E1</item>
+        <item>#74DF00</item>
+        <item>#9F81F7</item>
+        <item>#F5DA81</item>
+        <item>#2ECCFA</item>
+        <item>#FF0000</item>
+        <item>#8A0868</item>
+        <item>#58FAAC</item>
+        <item>#ECCEF5</item>
+        <item>#BF00FF</item>
+        <item>#FF8000</item>
+        <item>#D7DF01</item>
+        <item>#CECEF6</item>
+    </string-array>
+
+
 </resources>

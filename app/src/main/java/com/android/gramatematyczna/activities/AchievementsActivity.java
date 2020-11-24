@@ -1,16 +1,16 @@
-package com.android.gramatematyczna;
+package com.android.gramatematyczna.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.ClipData;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.GridView;
 
-import java.util.ArrayList;
+import com.android.gramatematyczna.adapters.DrawingsGridAdapter;
+import com.android.gramatematyczna.PreferencesManagement;
+import com.android.gramatematyczna.R;
 
 public class AchievementsActivity extends AppCompatActivity {
 

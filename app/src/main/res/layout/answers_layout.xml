@@ -11,7 +11,7 @@
         android:layout_height="50dp"
         app:cardCornerRadius="5dp"
         android:layout_margin="8dp"
-        android:backgroundTint="@color/grey">
+        android:backgroundTint="@color/color_numbers">
 
         <ImageView
             android:id="@+id/no_1"
@@ -27,7 +27,7 @@
         android:layout_height="50dp"
         app:cardCornerRadius="5dp"
         android:layout_margin="8dp"
-        android:backgroundTint="@color/grey">
+        android:backgroundTint="@color/color_numbers">
 
         <ImageView
             android:id="@+id/no_2"
@@ -43,7 +43,7 @@
         android:layout_height="50dp"
         app:cardCornerRadius="5dp"
         android:layout_margin="8dp"
-        android:backgroundTint="@color/grey">
+        android:backgroundTint="@color/color_numbers">
 
         <ImageView
             android:id="@+id/no_3"
@@ -59,7 +59,7 @@
         android:layout_height="50dp"
         app:cardCornerRadius="5dp"
         android:layout_margin="8dp"
-        android:backgroundTint="@color/grey">
+        android:backgroundTint="@color/color_numbers">
 
         <ImageView
             android:id="@+id/no_4"
@@ -75,7 +75,7 @@
         android:layout_height="50dp"
         app:cardCornerRadius="5dp"
         android:layout_margin="8dp"
-        android:backgroundTint="@color/grey">
+        android:backgroundTint="@color/color_numbers">
 
         <ImageView
             android:id="@+id/no_5"

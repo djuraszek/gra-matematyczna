@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_blue"
-    tools:context=".GameActivity">
+    tools:context=".activities.GameActivity">
 
 
     <include layout="@layout/component_sound_board" />
@@ -32,9 +32,13 @@
                 android:text="Ile jest kotków na obrazku?"
                 android:textAlignment="center"
                 android:textSize="@dimen/text_m" />
-
-
         </RelativeLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_marginTop="16dp"
+            android:layout_height="300dp"
+            android:src="@drawable/cats"/>
 
     </LinearLayout>
 
@@ -51,14 +55,16 @@
         android:layout_height="72dp"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="16dp"
-        android:background="@drawable/board_down">
+        android:background="@drawable/board_down_2">
 
         <Button
             android:id="@+id/pause_btn"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_centerInParent="true"
-            android:background="@drawable/ic_pause" />
+            android:layout_marginTop="16dp"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/ic_pause"
+            android:onClick="pauseGame"/>
 
         <LinearLayout
             android:layout_width="wrap_content"

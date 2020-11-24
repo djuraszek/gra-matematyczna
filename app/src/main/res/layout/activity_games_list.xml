@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_blue"
-    tools:context=".GamesListActivity">
+    tools:context=".activities.GamesListActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -26,7 +26,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:background="@drawable/board_up_2">
+        android:background="@drawable/board_up_3">
 
         <Button
             android:id="@+id/back_btn"
