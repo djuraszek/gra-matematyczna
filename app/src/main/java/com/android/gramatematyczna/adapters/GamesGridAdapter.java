@@ -69,7 +69,13 @@ public class GamesGridAdapter extends BaseAdapter {
         ImageView gameIcon = view.findViewById(R.id.game_icon);
         background.setBackgroundColor(color); // set logo images
 //        card.setCardBackgroundColor(drawing); // set logo images
-
+        if(gamesListTMP[i].getGameType()==0) {
+            String gameIconName="img_number_"+gamesListTMP[i].getNumber();
+            gameIcon.setImageResource(getDrawableByName(gameIconName));
+        }else if(gamesListTMP[i].getGameType()==1) {
+            String gameIconName="img_memory"+gamesListTMP[i].getNumber();
+            gameIcon.setImageResource(getDrawableByName(gameIconName));
+        }
         if(i==0 || i==1) {
             lock.setVisibility(View.INVISIBLE);
             if(isTMP) {
@@ -101,5 +107,9 @@ public class GamesGridAdapter extends BaseAdapter {
         return view;
     }
 
+    private int getDrawableByName(String name){
+        int resID = context.getResources().getIdentifier(name , "drawable", context.getPackageName());
+        return resID;
+    }
 
 }
