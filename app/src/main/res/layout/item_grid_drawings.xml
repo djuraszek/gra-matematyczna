@@ -28,6 +28,13 @@
             android:adjustViewBounds="true"
             android:scaleType="centerCrop" />
 
+        <ImageView
+            android:id="@+id/game_icon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:scaleType="fitXY" />
 
         <ImageView
             android:id="@+id/item_lock"
@@ -47,5 +54,6 @@
             android:scaleType="fitXY"
             android:src="@drawable/ic_file_download_black_24dp"
             android:visibility="gone" />
+
     </androidx.cardview.widget.CardView>
 </RelativeLayout>
