@@ -18,9 +18,7 @@ public class GamesListActivity extends AppCompatActivity {
     PreferencesManagement preferencesManagement;
     int gamesList[] = {R.color.yellow, R.color.blue_light, R.color.pink_light, R.color.green_bright, R.color.purple, R.color.blue_strong, R.color.red_fire, R.color.purple_pope, R.color.green_neon, R.color.pink_powder, R.color.color_numbers, R.color.orange, R.color.yellow_neon};
     GameListItem gamesListTMP[] = {new GameListItem(R.color.yellow, 3, 0,0),
-            new GameListItem(R.color.yellow, 3,  0,1),
             new GameListItem(R.color.green_neon, 4, 0,0),
-            new GameListItem(R.color.green_neon, 4,  0,1),
             new GameListItem(R.color.blue_light, 5, 0,0),
             new GameListItem(R.color.blue_light, 5,  0,1),
             new GameListItem(R.color.purple, 6, 0,0),
