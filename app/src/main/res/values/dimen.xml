@@ -9,4 +9,7 @@
 
     <dimen name="button_size">30dp</dimen>
 
+    <dimen name="command">30dp</dimen>
+    <dimen name="margin_command">20dp</dimen>
+
 </resources>

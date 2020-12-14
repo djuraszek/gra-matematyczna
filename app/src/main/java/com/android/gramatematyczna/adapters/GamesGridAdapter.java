@@ -13,6 +13,8 @@ import androidx.core.content.res.ResourcesCompat;
 
 import com.android.gramatematyczna.R;
 import com.android.gramatematyczna.activities.GameActivity;
+import com.android.gramatematyczna.games.GameCountActivity;
+import com.android.gramatematyczna.games.GameMemoryActivity;
 
 public class GamesGridAdapter extends BaseAdapter {
     Context context;
@@ -54,7 +56,8 @@ public class GamesGridAdapter extends BaseAdapter {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(context, GameActivity.class);
+                    Intent intent = new Intent(context, GameCountActivity.class);
+                    intent.putExtra("NEW_NUMBER", 7);
                     context.startActivity(intent);
                 }
             });

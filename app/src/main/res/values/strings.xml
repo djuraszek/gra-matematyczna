@@ -21,4 +21,9 @@
     </string-array>
 
 
+    <string name="command_count_elements">ile elementów widzisz na obrazku?</string>
+    <string name="question_play_again">chcesz zagrać jeszcze raz?</string>
+
+
+
 </resources>
