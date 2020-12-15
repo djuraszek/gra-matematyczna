@@ -1,0 +1,150 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="500dp"
+    android:layout_centerInParent="true">
+
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="0dp"
+        android:background="@drawable/bg" />
+
+
+    <LinearLayout
+        android:id="@+id/layout_stars"
+        android:layout_width="270dp"
+        android:layout_height="100dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/stars_placement"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/stars_imageview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/stars_1" />
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/layout_stars"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginBottom="48dp"
+        android:background="@drawable/bg_table"
+        android:orientation="vertical"
+        android:paddingStart="16dp"
+        android:paddingTop="32dp"
+        android:paddingEnd="16dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/resume_btn"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:layout_marginBottom="24dp"
+                android:layout_marginEnd="24dp"
+                android:background="@drawable/ic_resume"
+                android:onClick="buttonClick" />
+
+            <Button
+                android:id="@+id/list_btn"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginBottom="24dp"
+                android:background="@drawable/ic_list"
+                android:onClick="buttonClick" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="70dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/heart_iv"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginEnd="40dp"
+                android:layout_alignParentEnd="true"
+                android:background="@drawable/heart_2" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Serduszka"
+                android:textSize="@dimen/text_l" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/coin_iv"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/coin_2" />
+
+                <ImageView
+                    android:id="@+id/coin2_iv"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/coin_2" />
+
+                <ImageView
+                    android:id="@+id/coin3_iv"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:background="@drawable/coin_2" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Monety"
+                android:textSize="@dimen/text_l" />
+        </RelativeLayout>
+    </RelativeLayout>
+    <!--    <TextView-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_centerHorizontal="true"-->
+    <!--        android:layout_marginTop="100dp"-->
+    <!--        android:text="PRZERWA"-->
+    <!--        android:textColor="@color/white"-->
+    <!--        android:textSize="@dimen/text_xxl"-->
+    <!--        android:textStyle="bold" />-->
+
+</RelativeLayout>

@@ -21,6 +21,8 @@ public class PreferencesManagement {
     Button musicBtn, soundBtn;
     TextView moneyTV;
 
+    int coins=0,hearts=0;
+
     BackgroundSoundService soundService;
 
     public PreferencesManagement(Context c) {
@@ -38,10 +40,9 @@ public class PreferencesManagement {
     }
 
     public void setup() {
-        if (moneyTV != null) {
-            int money = preferences.getInt("money", 0);
-            moneyTV.setText("" + money);
-        }
+        coins = preferences.getInt("coins", 0);
+        hearts = preferences.getInt("hearts", 0);
+
 
         boolean isMusicOn = preferences.getBoolean("isMusicOn", true);
         if (!isMusicOn) {
@@ -69,8 +70,7 @@ public class PreferencesManagement {
                     view.setBackground(context.getDrawable(R.drawable.ic_music_off));
                     Intent intent = new Intent(context, BackgroundSoundService.class);
                     context.stopService(intent);
-                }
-                else {
+                } else {
                     view.setBackground(context.getDrawable(R.drawable.ic_music_on));
                     Intent intent = new Intent(context, BackgroundSoundService.class);
                     context.startService(intent);
@@ -93,15 +93,46 @@ public class PreferencesManagement {
     }
 
 
-    public void addPoints(int points) {
-        int money = preferences.getInt("money", 0);
+    public void addCoins(int nr) {
+        coins = preferences.getInt("coins", 0);
         edit = preferences.edit();
 
-        money += points;
-        edit.putInt("money", money);
+        coins += nr;
+        edit.putInt("coins", coins);
         edit.apply();
 
-        moneyTV.setText("" + money);
+        //jesli dostajemy wszystki pkt to serduszko tez
+        if(nr==3){
+            addHeart();
+        }
     }
 
+    public void addHeart() {
+        hearts = preferences.getInt("hearts", 0);
+        edit = preferences.edit();
+
+        hearts += 1;
+        edit.putInt("hearts", hearts);
+        edit.apply();
+    }
+
+    public int getCoins() {
+        return coins;
+    }
+
+    public int getHearts() {
+        return hearts;
+    }
+
+
+    public void clearHearts(){
+        edit = preferences.edit();
+        edit.putInt("hearts", 0);
+        edit.apply();
+    }
+    public void clearCoins(){
+        edit = preferences.edit();
+        edit.putInt("coins", 0);
+        edit.apply();
+    }
 }

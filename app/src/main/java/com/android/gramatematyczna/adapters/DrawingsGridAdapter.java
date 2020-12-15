@@ -15,12 +15,12 @@ import com.android.gramatematyczna.R;
 public class DrawingsGridAdapter  extends BaseAdapter {
     Context context;
     int drawings[];
-    LayoutInflater inflter;
+    LayoutInflater inflater;
 
     public DrawingsGridAdapter(Context applicationContext, int[] drawings) {
         this.context = applicationContext;
         this.drawings = drawings;
-        inflter = (LayoutInflater.from(applicationContext));
+        inflater = (LayoutInflater.from(applicationContext));
     }
     @Override
     public int getCount() {
@@ -37,7 +37,7 @@ public class DrawingsGridAdapter  extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        view = inflter.inflate(R.layout.item_grid_drawings, null); // inflate the layout
+        view = inflater.inflate(R.layout.item_grid_drawings, null); // inflate the layout
         CardView card = (CardView) view.findViewById(R.id.cardview); // get the reference of ImageView
         Drawable drawing = context.getDrawable(drawings[i]);
         ImageView background = (ImageView)view.findViewById(R.id.card_background);

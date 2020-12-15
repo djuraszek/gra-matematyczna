@@ -6,34 +6,59 @@
     android:layout_height="match_parent"
     android:background="@drawable/background_blue">
 
-    <androidx.constraintlayout.widget.Guideline
-    android:id="@+id/g1"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    app:layout_constraintGuide_percent="0.75"
-    />
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/g2"
-        android:layout_width="wrap_content"
+
+<!--    android:columnWidth="90dp"
+        android:numColumns="auto_fit"-->
+    <GridView
+        android:id="@+id/GridViewImages"
+        android:layout_width="fill_parent"
+        android:layout_height="400dp"
+        android:clickable="false"
+        android:gravity="center"
+        android:horizontalSpacing="5dp"
+        android:listSelector="@android:color/transparent"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="5dp"
+        app:layout_constraintBottom_toBottomOf="@id/g1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/g2" />
+
+    <GridView
+        android:id="@+id/GridViewButtons"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:gravity="center"
+        android:horizontalSpacing="10dp"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="10dp"
+        app:layout_constraintBottom_toBottomOf="@id/g3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/g1" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.35"
-        />
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/g3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.9"
-        />
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/g0"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.1"
-        />
+        android:layout_marginHorizontal="@dimen/margin_command"
+        android:background="@drawable/cloud"
+        android:gravity="center"
+        android:paddingBottom="30dp"
+        app:layout_constraintBottom_toBottomOf="@id/g2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/g0">
+
+        <TextView
+            android:id="@+id/CountGameCommand"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/command_count_elements"
+            android:textSize="@dimen/command" />
+    </LinearLayout>
 
     <RelativeLayout
         android:layout_width="0dp"
@@ -42,61 +67,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-    <include
-        layout="@layout/component_sound_board"/>
+
+        <include layout="@layout/component_sound_board" />
     </RelativeLayout>
-
-
-    <TextView
-        android:id="@+id/CountGameCommand"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/g0"
-        app:layout_constraintBottom_toBottomOf="@id/g2"
-        android:text="@string/command_count_elements"
-        android:gravity="center"
-        android:textSize="@dimen/command"
-        android:layout_marginHorizontal="@dimen/margin_command"
-        android:background="@drawable/cloud"
-        />
-
-    <GridView
-        android:id="@+id/GridViewImages"
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:columnWidth="90dp"
-        android:numColumns="auto_fit"
-        android:verticalSpacing="5dp"
-        android:horizontalSpacing="5dp"
-        android:stretchMode="columnWidth"
-        android:gravity="center"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/g2"
-        app:layout_constraintBottom_toBottomOf="@id/g1"
-        android:clickable="false"
-        android:listSelector="@android:color/transparent"
-        />
-
-
-    <GridView
-        android:id="@+id/GridViewButtons"
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:columnWidth="10dp"
-        android:numColumns="5"
-        android:verticalSpacing="10dp"
-        android:horizontalSpacing="10dp"
-        android:stretchMode="columnWidth"
-        android:gravity="center"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/g1"
-        app:layout_constraintBottom_toBottomOf="@id/g3"
-        android:layout_marginHorizontal="10dp"
-        />
 
     <RelativeLayout
         android:id="@+id/bottom_bar"
@@ -116,15 +89,75 @@
             android:onClick="pauseGame" />
 
         <LinearLayout
+            android:id="@+id/answers_layout"
             android:layout_width="wrap_content"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="16dp"
-            android:layout_marginBottom="2dp">
+            android:layout_marginBottom="11dp">
 
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="8dp"
+                android:background="@color/grey" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="8dp"
+                android:background="@color/grey" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="8dp"
+                android:background="@color/grey" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="8dp"
+                android:background="@color/grey" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="0dp"
+                android:background="@color/grey" />
 
         </LinearLayout>
     </RelativeLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/g2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.3" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/g3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.9" />
+
+    <!--    android:columnWidth="10dp"
+            android:numColumns="5"-->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/g0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.08" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/g1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.75" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

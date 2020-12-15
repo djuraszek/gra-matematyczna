@@ -7,6 +7,7 @@ import java.util.Random;
 /**
  * Created by B.A.Wędrychowicz on 23.11.2020
  */
+
 class Game {
     int newNumber;
     ArrayList<Integer> numbers = new ArrayList<>();

@@ -35,6 +35,13 @@ public class MainActivity extends AppCompatActivity {
 
         animShake = AnimationUtils.loadAnimation(this, R.anim.shake);
         System.out.println("MainActivity.onCreate()");
+//        cleanData();
+    }
+
+    public void cleanData(){
+        PreferencesManagement preferencesManagement = new PreferencesManagement(MainActivity.this);
+        preferencesManagement.clearCoins();
+        preferencesManagement.clearHearts();
     }
 
     public void buttonClick(View view) {

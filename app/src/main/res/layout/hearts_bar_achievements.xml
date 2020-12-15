@@ -15,30 +15,30 @@
 
 
         <ImageView
-            android:id="@+id/img1"
+            android:id="@+id/bar_heart1"
             android:layout_width="50dp"
             android:layout_height="match_parent"
-            android:src="@drawable/heart" />
+            android:background="@drawable/heart_2" />
         <ImageView
-            android:id="@+id/img2"
+            android:id="@+id/bar_heart2"
             android:layout_width="50dp"
             android:layout_height="match_parent"
-            android:src="@drawable/heart_2" />
+            android:background="@drawable/heart_2" />
         <ImageView
-            android:id="@+id/img3"
+            android:id="@+id/bar_heart3"
             android:layout_width="50dp"
             android:layout_height="match_parent"
-            android:src="@drawable/heart_2" />
+            android:background="@drawable/heart_2" />
         <ImageView
-            android:id="@+id/img4"
+            android:id="@+id/bar_heart4"
             android:layout_width="50dp"
             android:layout_height="match_parent"
-            android:src="@drawable/heart_2" />
+            android:background="@drawable/heart_2" />
         <ImageView
-            android:id="@+id/img5"
+            android:id="@+id/bar_heart5"
             android:layout_width="50dp"
             android:layout_height="match_parent"
-            android:src="@drawable/heart_2" />
+            android:background="@drawable/heart_2" />
     </LinearLayout>
 
 </RelativeLayout>
