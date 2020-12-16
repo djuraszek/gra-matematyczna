@@ -1,5 +1,6 @@
 package com.android.gramatematyczna.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -7,12 +8,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.cardview.widget.CardView;
 import androidx.core.content.res.ResourcesCompat;
 
+import com.android.gramatematyczna.PreferencesManagement;
 import com.android.gramatematyczna.R;
 import com.android.gramatematyczna.activities.GameActivity;
+import com.android.gramatematyczna.activities.GamesListActivity;
 import com.android.gramatematyczna.games.GameCountActivity;
 import com.android.gramatematyczna.games.GameListItem;
 import com.android.gramatematyczna.games.GameMemoryActivity;
@@ -22,6 +26,8 @@ public class GamesGridAdapter extends BaseAdapter {
     int colors[];
     LayoutInflater inflter;
     boolean isTMP=false;
+    int coins;
+    PreferencesManagement preferencesManagement;
 
     public GamesGridAdapter(Context applicationContext, int[] colors) {
         this.context = applicationContext;
@@ -33,6 +39,7 @@ public class GamesGridAdapter extends BaseAdapter {
     public GamesGridAdapter(Context applicationContext, GameListItem[] gamesListTMP) {
         this.context = applicationContext;
         this.gamesListTMP = gamesListTMP;
+        getCoinsFromPreferences();
         inflter = (LayoutInflater.from(applicationContext));
         isTMP=true;
     }
@@ -65,7 +72,7 @@ public class GamesGridAdapter extends BaseAdapter {
 
         ImageView background = (ImageView)view.findViewById(R.id.card_background);
         ImageView lock = (ImageView)view.findViewById(R.id.item_lock);
-        ImageView download = (ImageView)view.findViewById(R.id.item_unlock);
+        final ImageView download = (ImageView)view.findViewById(R.id.item_unlock);
         ImageView gameIcon = view.findViewById(R.id.game_icon);
         background.setBackgroundColor(color); // set logo images
 //        card.setCardBackgroundColor(drawing); // set logo images
@@ -76,7 +83,7 @@ public class GamesGridAdapter extends BaseAdapter {
             String gameIconName="img_memory"+gamesListTMP[i].getNumber();
             gameIcon.setImageResource(getDrawableByName(gameIconName));
         }
-        if(i==0 || i==1) {
+        if(!gamesListTMP[i].isGameLocked()) {
             lock.setVisibility(View.INVISIBLE);
             if(isTMP) {
                 view.setOnClickListener(new View.OnClickListener() {
@@ -104,12 +111,40 @@ public class GamesGridAdapter extends BaseAdapter {
                 });
             }
         }
+        //unlock game
+        if(gamesListTMP[i].isGameLocked()&& coins>7 && !gamesListTMP[i-1].isGameLocked()) {
+            lock.setVisibility(View.INVISIBLE);
+            download.setVisibility(View.VISIBLE);
+            view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Toast.makeText(context, "unlocked", Toast.LENGTH_SHORT).show();
+                        //TODO confirm unlock game
+                        gamesListTMP[i].setGameLocked(false);
+                        clearCoins();
+                        download.setVisibility(View.INVISIBLE);
+
+                    }
+                });
+        }
         return view;
     }
 
     private int getDrawableByName(String name){
         int resID = context.getResources().getIdentifier(name , "drawable", context.getPackageName());
         return resID;
+    }
+    private void getCoinsFromPreferences(){
+        preferencesManagement = new PreferencesManagement(context);
+        preferencesManagement.manage();
+        coins = preferencesManagement.getCoins();
+    }
+    private void clearCoins(){
+        preferencesManagement.clearCoins();
+        int[] coinsIV = {R.id.bar_coin1,R.id.bar_coin2,R.id.bar_coin3,R.id.bar_coin4,R.id.bar_coin5,R.id.bar_coin6,R.id.bar_coin7,R.id.bar_coin8};
+        for(int i=0; i<coins;i++){
+            ((ImageView) ((Activity) context).findViewById(coinsIV[i])).setBackground(context.getResources().getDrawable(R.drawable.coin_2));
+        }
     }
 
 }
