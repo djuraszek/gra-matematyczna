@@ -9,20 +9,16 @@ public class GameListItem {
     int gamePictureName;
     int gameType;
     //0-count elements, 1-memory game
+    boolean isLocked;
 
-    public GameListItem(int color, int number, int gamePictureName) {
-        this.color = color;
-        this.number = number;
-        this.gamePictureName = gamePictureName;
-    }
-    public GameListItem() {
-    }
-
-    public GameListItem(int color, int number, int gamePictureName, int gameType) {
+    public GameListItem(int color, int number, int gamePictureName, int gameType, boolean isLocked) {
         this.color = color;
         this.number = number;
         this.gamePictureName = gamePictureName;
         this.gameType = gameType;
+        this.isLocked = isLocked;
+    }
+    public GameListItem() {
     }
 
     public int getColor() {
@@ -48,5 +44,11 @@ public class GameListItem {
     }
     public void setGameType(int gameType) {
         this.gameType = gameType;
+    }
+    public boolean isLocked() {
+        return isLocked;
+    }
+    public void setLocked(boolean locked) {
+        isLocked = locked;
     }
 }

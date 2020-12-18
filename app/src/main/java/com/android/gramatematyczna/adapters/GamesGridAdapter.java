@@ -1,7 +1,10 @@
 package com.android.gramatematyczna.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +19,12 @@ import com.android.gramatematyczna.activities.GameActivity;
 import com.android.gramatematyczna.games.GameCountActivity;
 import com.android.gramatematyczna.games.GameListItem;
 import com.android.gramatematyczna.games.GameMemoryActivity;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.List;
 
 public class GamesGridAdapter extends BaseAdapter {
     Context context;
@@ -65,7 +74,7 @@ public class GamesGridAdapter extends BaseAdapter {
 
         ImageView background = (ImageView)view.findViewById(R.id.card_background);
         ImageView lock = (ImageView)view.findViewById(R.id.item_lock);
-        ImageView download = (ImageView)view.findViewById(R.id.item_unlock);
+        final ImageView download = (ImageView)view.findViewById(R.id.item_unlock);
         ImageView gameIcon = view.findViewById(R.id.game_icon);
         background.setBackgroundColor(color); // set logo images
 //        card.setCardBackgroundColor(drawing); // set logo images
@@ -76,7 +85,7 @@ public class GamesGridAdapter extends BaseAdapter {
             String gameIconName="img_memory"+gamesListTMP[i].getNumber();
             gameIcon.setImageResource(getDrawableByName(gameIconName));
         }
-        if(i==0 || i==1) {
+        if(!gamesListTMP[i].isLocked()) {
             lock.setVisibility(View.INVISIBLE);
             if(isTMP) {
                 view.setOnClickListener(new View.OnClickListener() {
@@ -104,6 +113,23 @@ public class GamesGridAdapter extends BaseAdapter {
                 });
             }
         }
+            //TODO count coins
+            if(gamesListTMP[i].isLocked() && !gamesListTMP[i-1].isLocked()){
+                lock.setVisibility(View.INVISIBLE);
+                download.setVisibility(View.VISIBLE);
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        gamesListTMP[i].setLocked(false);
+                        download.setVisibility(View.INVISIBLE);
+                        saveGameList();
+//                        getGameList();
+                    }
+                });
+            }
+
+
+
         return view;
     }
 
@@ -111,5 +137,25 @@ public class GamesGridAdapter extends BaseAdapter {
         int resID = context.getResources().getIdentifier(name , "drawable", context.getPackageName());
         return resID;
     }
+
+    public void saveGameList(){
+        SharedPreferences sharedPrefs = context.getSharedPreferences("Games", Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        Gson gson = new Gson();
+        List <GameListItem> list = Arrays.asList(gamesListTMP);
+        String json = gson.toJson(list);
+
+        editor.putString("GameList", json);
+        editor.commit();
+    }
+    public GameListItem[] getGameList(){
+        SharedPreferences sharedPrefs = context.getSharedPreferences("Games", Activity.MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPrefs.getString("GameList", "");
+        List<GameListItem> arrayList = gson.fromJson(json, new TypeToken<List<GameListItem>>() {}.getType());
+        GameListItem gamesListTMP2[]=arrayList.toArray(new GameListItem[0]);
+        return gamesListTMP2;
+    }
+
 
 }

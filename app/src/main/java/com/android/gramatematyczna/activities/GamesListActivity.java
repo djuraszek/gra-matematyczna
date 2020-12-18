@@ -2,6 +2,8 @@ package com.android.gramatematyczna.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -14,26 +16,17 @@ import com.android.gramatematyczna.PreferencesManagement;
 import com.android.gramatematyczna.R;
 import com.android.gramatematyczna.adapters.GamesGridAdapter;
 import com.android.gramatematyczna.games.GameListItem;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.util.List;
 
 public class GamesListActivity extends AppCompatActivity {
 
     int coins = 0;
     PreferencesManagement preferencesManagement;
     int gamesList[] = {R.color.yellow, R.color.blue_light, R.color.pink_light, R.color.green_bright, R.color.purple, R.color.blue_strong, R.color.red_fire, R.color.purple_pope, R.color.green_neon, R.color.pink_powder, R.color.color_numbers, R.color.orange, R.color.yellow_neon};
-    GameListItem gamesListTMP[] = {new GameListItem(R.color.yellow, 3, 0,0),
-            new GameListItem(R.color.green_neon, 4, 0,0),
-            new GameListItem(R.color.blue_light, 5, 0,0),
-            new GameListItem(R.color.blue_light, 5,  0,1),
-            new GameListItem(R.color.purple, 6, 0,0),
-            new GameListItem(R.color.purple, 6,  0,1),
-            new GameListItem(R.color.red_fire, 7, 0,0),
-            new GameListItem(R.color.red_fire, 7,  0,1),
-            new GameListItem(R.color.pink_powder, 8, 0,0),
-            new GameListItem(R.color.pink_powder, 8,  0,1),
-            new GameListItem(R.color.yellow, 9, 0,0),
-            new GameListItem(R.color.yellow, 9,  0,1),
-            new GameListItem(R.color.green_neon, 10, 0,0),
-            new GameListItem(R.color.green_neon, 10,  0,1), };
+    GameListItem gamesListTMP[];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +37,28 @@ public class GamesListActivity extends AppCompatActivity {
         preferencesManagement = new PreferencesManagement(GamesListActivity.this);
         preferencesManagement.manage();
         coins = preferencesManagement.getCoins();
+
+        if(getFirstUse()){
+            GameListItem gamesListTMP2[] = {new GameListItem(R.color.yellow, 3, 0,0, false),
+                    new GameListItem(R.color.green_neon, 4, 0,0, false),
+                    new GameListItem(R.color.blue_light, 5, 0,0, false),
+                    new GameListItem(R.color.blue_light, 5,  0,1, true),
+                    new GameListItem(R.color.purple, 6, 0,0, true),
+                    new GameListItem(R.color.purple, 6,  0,1, true),
+                    new GameListItem(R.color.red_fire, 7, 0,0, true),
+                    new GameListItem(R.color.red_fire, 7,  0,1, true),
+                    new GameListItem(R.color.pink_powder, 8, 0,0, true),
+                    new GameListItem(R.color.pink_powder, 8,  0,1, true),
+                    new GameListItem(R.color.yellow, 9, 0,0, true),
+                    new GameListItem(R.color.yellow, 9,  0,1, true),
+                    new GameListItem(R.color.green_neon, 10, 0,0, true),
+                    new GameListItem(R.color.green_neon, 10,  0,1, true)};
+            gamesListTMP=gamesListTMP2;
+            setFirstUse();
+        }else{
+            gamesListTMP=getGameList();
+        }
+
 
 //        GamesGridAdapter adapter = new GamesGridAdapter(GamesListActivity.this, gamesList);
         GamesGridAdapter adapter = new GamesGridAdapter(GamesListActivity.this, gamesListTMP);
@@ -74,5 +89,25 @@ public class GamesListActivity extends AppCompatActivity {
             Toast.makeText(this,"Możesz odblokowac gre!",Toast.LENGTH_SHORT).show();
         }
     }
+
+    public GameListItem[] getGameList(){
+        SharedPreferences sharedPrefs = getSharedPreferences("Games", Activity.MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPrefs.getString("GameList", "");
+        List<GameListItem> arrayList = gson.fromJson(json, new TypeToken<List<GameListItem>>() {}.getType());
+        GameListItem gamesListTMP2[]=arrayList.toArray(new GameListItem[0]);
+        return gamesListTMP2;
+    }
+    private void setFirstUse(){
+        SharedPreferences sharedPrefs = getSharedPreferences("Games", Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putBoolean("FirstUse", false);
+        editor.commit();
+    }
+    private boolean getFirstUse(){
+        SharedPreferences sharedPrefs = getSharedPreferences("Games", Activity.MODE_PRIVATE);
+        return sharedPrefs.getBoolean("FirstUse", true);
+    }
+
 
 }
