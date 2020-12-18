@@ -115,6 +115,13 @@ public class PreferencesManagement {
         edit.putInt("hearts", hearts);
         edit.apply();
     }
+    public void setFullHeart() {
+        hearts = preferences.getInt("hearts", 0);
+        edit = preferences.edit();
+        hearts =5;
+        edit.putInt("hearts", hearts);
+        edit.apply();
+    }
 
     public int getCoins() {
         return coins;
