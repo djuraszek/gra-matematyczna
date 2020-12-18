@@ -10,12 +10,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.cardview.widget.CardView;
 import androidx.core.content.res.ResourcesCompat;
 
+import com.android.gramatematyczna.PreferencesManagement;
 import com.android.gramatematyczna.R;
 import com.android.gramatematyczna.activities.GameActivity;
+import com.android.gramatematyczna.activities.GamesListActivity;
 import com.android.gramatematyczna.games.GameCountActivity;
 import com.android.gramatematyczna.games.GameListItem;
 import com.android.gramatematyczna.games.GameMemoryActivity;
@@ -32,6 +35,9 @@ public class GamesGridAdapter extends BaseAdapter {
     LayoutInflater inflter;
     boolean isTMP=false;
 
+    int coins = 0;
+    PreferencesManagement preferencesManagement;
+
     public GamesGridAdapter(Context applicationContext, int[] colors) {
         this.context = applicationContext;
         this.colors = colors;
@@ -44,6 +50,9 @@ public class GamesGridAdapter extends BaseAdapter {
         this.gamesListTMP = gamesListTMP;
         inflter = (LayoutInflater.from(applicationContext));
         isTMP=true;
+        preferencesManagement = new PreferencesManagement(context);
+        preferencesManagement.manage();
+        coins = preferencesManagement.getCoins();
     }
 
     @Override
@@ -113,8 +122,8 @@ public class GamesGridAdapter extends BaseAdapter {
                 });
             }
         }
-            //TODO count coins
-            if(gamesListTMP[i].isLocked() && !gamesListTMP[i-1].isLocked()){
+            //TODO choose game to unlock
+            if(coins>7 && gamesListTMP[i].isLocked() && !gamesListTMP[i-1].isLocked()){
                 lock.setVisibility(View.INVISIBLE);
                 download.setVisibility(View.VISIBLE);
                 view.setOnClickListener(new View.OnClickListener() {
@@ -123,13 +132,10 @@ public class GamesGridAdapter extends BaseAdapter {
                         gamesListTMP[i].setLocked(false);
                         download.setVisibility(View.INVISIBLE);
                         saveGameList();
-//                        getGameList();
+                        setupCoinsBar();
                     }
                 });
             }
-
-
-
         return view;
     }
 
@@ -155,6 +161,15 @@ public class GamesGridAdapter extends BaseAdapter {
         List<GameListItem> arrayList = gson.fromJson(json, new TypeToken<List<GameListItem>>() {}.getType());
         GameListItem gamesListTMP2[]=arrayList.toArray(new GameListItem[0]);
         return gamesListTMP2;
+    }
+
+    public void setupCoinsBar(){
+    preferencesManagement.clearCoins();
+    int[] coinsIV = {R.id.bar_coin1,R.id.bar_coin2,R.id.bar_coin3,R.id.bar_coin4,R.id.bar_coin5,R.id.bar_coin6,R.id.bar_coin7,R.id.bar_coin8};
+        for(int i=0; i<coins;i++){
+            ((ImageView)((Activity)context).findViewById(coinsIV[i])).setBackground(context.getResources().getDrawable(R.drawable.coin_2));
+            if(i==7)i=coins;
+        }
     }
 
 
