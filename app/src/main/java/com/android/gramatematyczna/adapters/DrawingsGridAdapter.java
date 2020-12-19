@@ -4,14 +4,18 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 
 import com.android.gramatematyczna.AchievementListItem;
@@ -81,10 +85,11 @@ public class DrawingsGridAdapter  extends BaseAdapter {
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        listItems[i].setLocked(false);
-                        download.setVisibility(View.INVISIBLE);
-                        saveAchievementsList();
-                        setupHeartsBar();
+                        showConfirmDialog(i, download);
+//                        listItems[i].setLocked(false);
+//                        download.setVisibility(View.INVISIBLE);
+//                        saveAchievementsList();
+//                        setupHeartsBar();
                     }
                 });
             }
@@ -112,5 +117,36 @@ public class DrawingsGridAdapter  extends BaseAdapter {
             ((ImageView)((Activity)context).findViewById(coinsIV[i])).setBackground(context.getResources().getDrawable(R.drawable.heart_2));
             if(i==4) i=hearts;
         }
+    }
+
+    private void showConfirmDialog(final int i, final ImageView download) {
+        ViewGroup viewGroup = ((Activity)context).findViewById(android.R.id.content);
+        View dialogView = LayoutInflater.from((Activity)context).inflate(R.layout.dialog_confirm_unlock, viewGroup, false);
+        TextView question = dialogView.findViewById(R.id.confirm_unlock);
+        question.setText(R.string.question_unlock_drawing);
+        AlertDialog.Builder builder = new AlertDialog.Builder((Activity)context);
+        builder.setView(dialogView);
+        final AlertDialog alertDialog = builder.create();
+        Button btn = dialogView.findViewById(R.id.button_no);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.cancel();
+            }
+        });
+        Button btn2 = dialogView.findViewById(R.id.button_yes);
+        btn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listItems[i].setLocked(false);
+                download.setVisibility(View.INVISIBLE);
+                saveAchievementsList();
+                setupHeartsBar();
+                alertDialog.cancel();
+            }
+        });
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        alertDialog.getWindow().setLayout(100, 100);
+        alertDialog.show();
     }
 }

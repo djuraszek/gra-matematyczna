@@ -37,7 +37,7 @@ public class GamesListActivity extends AppCompatActivity {
         preferencesManagement = new PreferencesManagement(GamesListActivity.this);
         preferencesManagement.manage();
         //little cheat for test:
-        preferencesManagement.addCoins(8);
+//        preferencesManagement.addCoins(8);
         coins = preferencesManagement.getCoins();
 
         if(getFirstUse()){
