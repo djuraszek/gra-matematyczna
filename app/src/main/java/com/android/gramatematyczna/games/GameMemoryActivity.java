@@ -124,7 +124,7 @@ public class GameMemoryActivity extends AppCompatActivity {
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent,
                                     View v, final int position, long id) {
-                // TODO
+
                 final ImageView imageView = (ImageView) v;
                 if (!elements.get(position).isOpen && numOfOpen == 0) {
                     elements.get(position).open();

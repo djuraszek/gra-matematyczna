@@ -4,14 +4,18 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.res.ResourcesCompat;
 
@@ -129,10 +133,11 @@ public class GamesGridAdapter extends BaseAdapter {
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        gamesListTMP[i].setLocked(false);
-                        download.setVisibility(View.INVISIBLE);
-                        saveGameList();
-                        setupCoinsBar();
+                        showConfirmDialog(i, download);
+//                        gamesListTMP[i].setLocked(false);
+//                        download.setVisibility(View.INVISIBLE);
+//                        saveGameList();
+//                        setupCoinsBar();
                     }
                 });
             }
@@ -172,5 +177,35 @@ public class GamesGridAdapter extends BaseAdapter {
         }
     }
 
+    private void showConfirmDialog(final int i, final ImageView download) {
+        ViewGroup viewGroup = ((Activity)context).findViewById(android.R.id.content);
+        View dialogView = LayoutInflater.from((Activity)context).inflate(R.layout.dialog_confirm_unlock, viewGroup, false);
+        TextView question = dialogView.findViewById(R.id.confirm_unlock);
+        question.setText(R.string.question_unlock_game);
+        AlertDialog.Builder builder = new AlertDialog.Builder((Activity)context);
+        builder.setView(dialogView);
+        final AlertDialog alertDialog = builder.create();
+        Button btn = dialogView.findViewById(R.id.button_no);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.cancel();
+            }
+        });
+        Button btn2 = dialogView.findViewById(R.id.button_yes);
+        btn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                gamesListTMP[i].setLocked(false);
+                download.setVisibility(View.INVISIBLE);
+                saveGameList();
+                setupCoinsBar();
+                alertDialog.cancel();
+            }
+        });
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        alertDialog.getWindow().setLayout(100, 100);
+        alertDialog.show();
+    }
 
 }
