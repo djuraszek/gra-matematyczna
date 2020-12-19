@@ -23,6 +23,11 @@
 
     <string name="command_count_elements">ile elementów widzisz na obrazku?</string>
     <string name="question_play_again">chcesz zagrać jeszcze raz?</string>
+    <string name="question_unlock_game">jesteś pewien, że chcesz odblokować wybraną grę?</string>
+    <string name="question_unlock_drawing">jesteś pewien, że chcesz odblokować wybraną kolorowankę?</string>
+    <string name="command_count_cat">ile kotków widzisz na obrazku?</string>
+    <string name="command_count_dog">ile piesków widzisz na obrazku?</string>
+    <string name="command_count_star">ile gwiazdek widzisz na obrazku?</string>
 
 
 

@@ -35,6 +35,7 @@ public class GameCountActivity extends AppCompatActivity {
     ArrayList<Integer> game = new ArrayList<>();
     ArrayList<Integer> buttons = new ArrayList<>();
     LinearLayout answersLayout;
+    TextView command;
     Game g;
     PreferencesManagement preferencesManagement;
     public Integer[] elementsImages;
@@ -45,6 +46,11 @@ public class GameCountActivity extends AppCompatActivity {
             "img_cat",
             "img_dog",
             "img_star"
+    };
+    public int[] imageNamesCommand = {
+            R.string.command_count_cat,
+            R.string.command_count_dog,
+            R.string.command_count_star
     };
 
 
@@ -58,7 +64,7 @@ public class GameCountActivity extends AppCompatActivity {
         setContentView(R.layout.activity_game_count);
         preferencesManagement = new PreferencesManagement(GameCountActivity.this);
         preferencesManagement.manage();
-
+        command = findViewById(R.id.count_game_command);
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         newNumber = extras.getInt("NEW_NUMBER", 3);
@@ -81,7 +87,9 @@ public class GameCountActivity extends AppCompatActivity {
 
     private void generateElementList(int numberOfElements) {
         Random r = new Random();
-        String imgName = imageNames[r.nextInt(imageNames.length)];
+        int n=r.nextInt(imageNames.length);
+        String imgName = imageNames[n];
+        command.setText(imageNamesCommand[n]);
         int imgID = getDrawableByName(imgName);
 //        Toast.makeText(this, ""+imgName+"  -  "+imgID, Toast.LENGTH_SHORT).show();
         elementsImages = new Integer[numberOfElements];
