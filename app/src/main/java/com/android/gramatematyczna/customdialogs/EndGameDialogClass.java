@@ -17,7 +17,6 @@ import androidx.annotation.Nullable;
 
 import com.android.gramatematyczna.R;
 import com.android.gramatematyczna.activities.GamesListActivity;
-import com.android.gramatematyczna.activities.MainActivity;
 
 import java.util.List;
 
@@ -39,7 +38,7 @@ public class EndGameDialogClass extends Dialog implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.end_game_dialog);
+        setContentView(R.layout.dialog_end_game);
         listBtn = (Button) findViewById(R.id.list_btn);
         listBtn.setOnClickListener(this);
         resumeBtn = (Button) findViewById(R.id.resume_btn);

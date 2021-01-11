@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
@@ -18,57 +19,40 @@ import com.android.gramatematyczna.activities.MainActivity;
 
 import java.util.List;
 
-public class PauseDialogClass extends Dialog implements android.view.View.OnClickListener {
+public class DialogShowCode extends Dialog implements View.OnClickListener {
     public Activity activity;
-    Button homeBtn, resumeBtn, listBtn;
+    Button backBtn;
+    String code = "";
 
-    public PauseDialogClass(Activity activity) {
+    public DialogShowCode(Activity activity, String code) {
         super(activity);
         this.activity = activity;
+        this.code = code;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.dialog_pause);
-        homeBtn = (Button) findViewById(R.id.home_btn);
-        homeBtn.setOnClickListener(this);
-        listBtn = (Button) findViewById(R.id.list_btn);
-        listBtn.setOnClickListener(this);
-        resumeBtn = (Button) findViewById(R.id.resume_btn);
-        resumeBtn.setOnClickListener(this);
+        setContentView(R.layout.dialog_show_code);
 
+        TextView code = (TextView)findViewById(R.id.drawing_code);
+        code.setText(this.code);
+
+        backBtn = (Button) findViewById(R.id.close_btn);
+        backBtn.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.home_btn:
-                goToHomeScreen();
-                break;
-            case R.id.list_btn:
-                goToListScreen();
-                break;
-            case R.id.resume_btn:
-                dismiss();
+            case R.id.close_btn:
+                this.dismiss();
                 break;
             default:
                 break;
         }
         dismiss();
-    }
-
-    public void goToHomeScreen() {
-        Intent intent = new Intent(activity, MainActivity.class);
-        activity.startActivity(intent);
-        activity.finish();
-    }
-
-    public void goToListScreen() {
-        Intent intent = new Intent(activity, GamesListActivity.class);
-        activity.startActivity(intent);
-        activity.finish();
     }
 
     @Override

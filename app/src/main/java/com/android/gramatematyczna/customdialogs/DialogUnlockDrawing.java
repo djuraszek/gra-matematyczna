@@ -18,11 +18,11 @@ import com.android.gramatematyczna.activities.MainActivity;
 
 import java.util.List;
 
-public class PauseDialogClass extends Dialog implements android.view.View.OnClickListener {
+public class DialogUnlockDrawing extends Dialog implements View.OnClickListener {
     public Activity activity;
     Button homeBtn, resumeBtn, listBtn;
 
-    public PauseDialogClass(Activity activity) {
+    public DialogUnlockDrawing(Activity activity) {
         super(activity);
         this.activity = activity;
     }

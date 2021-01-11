@@ -21,13 +21,18 @@ public class PreferencesManagement {
     Button musicBtn, soundBtn;
     TextView moneyTV;
 
-    int coins=0,hearts=0;
+    int coins = 0, hearts = 0;
+
+    int maxCoins = 8;
+    int maxHearts = 5;
 
     BackgroundSoundService soundService;
 
     public PreferencesManagement(Context c) {
         context = c;
         View rootView = ((Activity) context).getWindow().getDecorView().findViewById(android.R.id.content);
+
+
 
         preferences = context.getSharedPreferences("Settings", MODE_PRIVATE);
         musicBtn = rootView.findViewById(R.id.music_btn);
@@ -42,7 +47,6 @@ public class PreferencesManagement {
     public void setup() {
         coins = preferences.getInt("coins", 0);
         hearts = preferences.getInt("hearts", 0);
-
 
         boolean isMusicOn = preferences.getBoolean("isMusicOn", true);
         if (!isMusicOn) {
@@ -98,22 +102,31 @@ public class PreferencesManagement {
         edit = preferences.edit();
 
         coins += nr;
+        if (coins > maxCoins) coins = maxCoins;
         edit.putInt("coins", coins);
         edit.apply();
 
         //jesli dostajemy wszystki pkt to serduszko tez
-        if(nr==3){
+        if (nr == 3) {
             addHeart();
         }
     }
 
-    public void addHeart() {
-        hearts = preferences.getInt("hearts", 0);
+    public void setMaxHearts(){
         edit = preferences.edit();
-
-        hearts += 1;
-        edit.putInt("hearts", hearts);
+        edit.putInt("hearts", maxHearts);
         edit.apply();
+    }
+
+    public void addHeart() {
+        if (hearts <= maxHearts) {
+            hearts = preferences.getInt("hearts", 0);
+            edit = preferences.edit();
+
+            hearts += 1;
+            edit.putInt("hearts", hearts);
+            edit.apply();
+        }
     }
     public void setFullHeart() {
         hearts = preferences.getInt("hearts", 0);
@@ -132,12 +145,14 @@ public class PreferencesManagement {
     }
 
 
-    public void clearHearts(){
+    public void clearHearts() {
+        Log.d("PreferencesManagement","hearts cleared");
         edit = preferences.edit();
         edit.putInt("hearts", 0);
         edit.apply();
     }
-    public void clearCoins(){
+
+    public void clearCoins() {
         edit = preferences.edit();
         edit.putInt("coins", 0);
         edit.apply();
