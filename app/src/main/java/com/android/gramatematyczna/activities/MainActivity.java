@@ -14,11 +14,11 @@ import android.widget.Button;
 import com.android.gramatematyczna.BackgroundSoundService;
 import com.android.gramatematyczna.PreferencesManagement;
 import com.android.gramatematyczna.R;
+import com.android.gramatematyczna.database.DatabaseHelper;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button startBtn, achievementsBtn, exitBtn;
-    Button soundBtn, musicBtn;
+
     Animation animShake;
 
     @Override
@@ -32,6 +32,12 @@ public class MainActivity extends AppCompatActivity {
 
         PreferencesManagement preferencesManagement = new PreferencesManagement(MainActivity.this);
         preferencesManagement.manage();
+//        preferencesManagement.setMaxHearts();
+
+
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+        dbHelper.clearData();
+
 
         animShake = AnimationUtils.loadAnimation(this, R.anim.shake);
         System.out.println("MainActivity.onCreate()");

@@ -3,6 +3,7 @@ package com.android.gramatematyczna.activities;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.speech.tts.Voice;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -11,6 +12,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.android.gramatematyczna.VoicePlayerService;
 import com.android.gramatematyczna.adapters.DrawingsGridAdapter;
 import com.android.gramatematyczna.PreferencesManagement;
 import com.android.gramatematyczna.R;
@@ -24,7 +26,9 @@ public class AchievementsActivity extends AppCompatActivity {
     int[] drawingList = {R.drawable.rys_1, R.drawable.rys_2, R.drawable.rys_3, R.drawable.rys_4, R.drawable.rys_5, R.drawable.rys_6, R.drawable.rys_7, R.drawable.rys_8, R.drawable.rys_9, R.drawable.rys_10};
     int hearts = 0;
     boolean canUnlock = false;
+    boolean playVoice = false;
     PreferencesManagement preferencesManagement;
+    VoicePlayerService playerService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +40,7 @@ public class AchievementsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_achievements);
         preferencesManagement = new PreferencesManagement(AchievementsActivity.this);
         preferencesManagement.manage();
+
 
         getHearts();
         setupGridView();
@@ -49,6 +54,7 @@ public class AchievementsActivity extends AppCompatActivity {
         if (hearts == 5) {
             Toast.makeText(this, "Możesz odblokowac kolorowanke!", Toast.LENGTH_SHORT).show();
             canUnlock = true;
+            playSound(true);
         }else{
             canUnlock = false;
         }
@@ -85,6 +91,7 @@ public class AchievementsActivity extends AppCompatActivity {
 
     public void onBackPressed(View view) {
         super.onBackPressed();
+        stopPlayer();
         finish();
     }
 
@@ -99,6 +106,18 @@ public class AchievementsActivity extends AppCompatActivity {
             }else{
                 ((ImageView) findViewById(coinsIV[i])).setBackground(getResources().getDrawable(R.drawable.heart_2));
             }
+        }
+    }
+
+    public void stopPlayer(){
+        if(playerService!=null) playerService.stop();
+    }
+
+    public void playSound(boolean canUnlock){
+        stopPlayer();
+        if(preferencesManagement.playSounds()) {
+             playerService = new VoicePlayerService(this);
+            playerService.playUnlockAchievements(canUnlock);
         }
     }
 }

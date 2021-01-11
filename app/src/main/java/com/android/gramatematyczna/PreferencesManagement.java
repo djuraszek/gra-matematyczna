@@ -27,6 +27,7 @@ public class PreferencesManagement {
     int maxHearts = 5;
 
     BackgroundSoundService soundService;
+    VoicePlayerService voicePlayerService;
 
     public PreferencesManagement(Context c) {
         context = c;
@@ -59,6 +60,10 @@ public class PreferencesManagement {
         boolean isSoundOn = preferences.getBoolean("isSoundOn", true);
         if (!isSoundOn) soundBtn.setBackground(context.getDrawable(R.drawable.ic_sound_off));
         else soundBtn.setBackground(context.getDrawable(R.drawable.ic_sound_on));
+    }
+
+    public boolean playSounds(){
+        return preferences.getBoolean("isSoundOn", true);
     }
 
     public void manage() {

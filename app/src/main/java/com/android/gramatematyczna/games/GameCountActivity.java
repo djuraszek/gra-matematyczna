@@ -276,6 +276,7 @@ public class GameCountActivity extends AppCompatActivity {
                 Intent intent = new Intent(activity, GameCountActivity.class);
                 intent.putExtra("NEW_NUMBER", newNumber);
                 activity.startActivity(intent);
+                finish();
             }
         };
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));

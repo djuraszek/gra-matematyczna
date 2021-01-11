@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -107,6 +106,12 @@ public class DrawingsGridAdapter extends BaseAdapter {
             //jest zablokowane i nie mozna odblokowac
             lock.setVisibility(View.VISIBLE);
             download.setVisibility(View.INVISIBLE);
+            card.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    playCantUnlockSound();
+                }
+            });
         }
         return view;
     }
@@ -124,8 +129,13 @@ public class DrawingsGridAdapter extends BaseAdapter {
     }
 
     public void updatedGrid(){
-        System.out.println("DrawingsGridAdapter: updateGrid()");
+//        System.out.println("DrawingsGridAdapter: updateGrid()");
         ((AchievementsActivity)activity).unlockedPicture();
     }
+
+    public void playCantUnlockSound(){
+        ((AchievementsActivity)activity).playSound(false);
+    }
+
 
 }
