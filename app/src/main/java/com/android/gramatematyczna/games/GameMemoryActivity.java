@@ -4,18 +4,21 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.gramatematyczna.PreferencesManagement;
 import com.android.gramatematyczna.R;
 import com.android.gramatematyczna.activities.GameActivity;
+import com.android.gramatematyczna.customdialogs.EndGameDialogClass;
 import com.android.gramatematyczna.customdialogs.PauseDialogClass;
 
 import java.util.ArrayList;
@@ -25,6 +28,11 @@ import java.util.List;
 public class GameMemoryActivity extends AppCompatActivity {
     int newNumber;
     int points = 0;
+    int totalOpenCards = 0;
+    int totalMoves = 0;
+
+    TextView movesNumberTV;
+
     ArrayList<Integer> game = new ArrayList<>();
     Game g;
     public Integer[] elementsImages;
@@ -38,6 +46,9 @@ public class GameMemoryActivity extends AppCompatActivity {
     int position1;
     ImageView firstImageView;
 
+
+    PreferencesManagement preferencesManagement;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +57,7 @@ public class GameMemoryActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN
         );
         setContentView(R.layout.activity_game_memory);
-        PreferencesManagement preferencesManagement = new PreferencesManagement(GameMemoryActivity.this);
+        preferencesManagement = new PreferencesManagement(GameMemoryActivity.this);
         preferencesManagement.manage();
 
         Intent intent = getIntent();
@@ -54,6 +65,9 @@ public class GameMemoryActivity extends AppCompatActivity {
         newNumber = extras.getInt("NEW_NUMBER", 3);
         g = new Game(newNumber);
         game = g.game;
+
+        movesNumberTV = findViewById(R.id.moves_number);
+        movesNumberTV.setText("0");
 
         createGame();
 
@@ -64,7 +78,6 @@ public class GameMemoryActivity extends AppCompatActivity {
     }
 
     private void generateElementList(int numberOfElements) {
-
         String imgName1 = "";
         String imgName2 = "";
         elementsImages = new Integer[10];
@@ -79,6 +92,7 @@ public class GameMemoryActivity extends AppCompatActivity {
             elementsBacks[i] = getDrawableByName("board_square");
             elementsBacks[i + 1] = getDrawableByName("board_square");
         }
+
         GridView gridview = (GridView) findViewById(R.id.GridViewMemory);
         gridview.setAdapter(new GridViewImageAdapter(this, elementsBacks));
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -89,6 +103,8 @@ public class GameMemoryActivity extends AppCompatActivity {
                 if (numOfOpen < 2 && imageView.getTag() != "front") {
                     imageView.setImageResource(elementsImages[position]);
                     numOfOpen++;
+                    totalMoves++;
+                    changeMovesTextView();
                     imageView.setTag("front");
                 } else if (imageView.getTag() == "front") {
                     imageView.setImageResource(getDrawableByName("board_square"));
@@ -129,18 +145,23 @@ public class GameMemoryActivity extends AppCompatActivity {
                 if (!elements.get(position).isOpen && numOfOpen == 0) {
                     elements.get(position).open();
                     numOfOpen++;
+                    totalMoves++;
+                    changeMovesTextView();
                     mem1 = elements.get(position);
                     position1 = position;
                     firstImageView = (ImageView) v;
                     imageView.setImageResource(elements.get(position).getPictureID());
                 } else if (!elements.get(position).isOpen && numOfOpen == 1) {
                     numOfOpen++;
+                    totalMoves++;
+                    changeMovesTextView();
                     mem2 = elements.get(position);
                     imageView.setImageResource(elements.get(position).getPictureID());
                     if (mem1.getNumber() == mem2.getNumber()) {
                         mem1.leftOpen();
                         mem2.leftOpen();
                         numOfOpen = 0;
+                        addTotalOpenCards();
                     } else {
                         final Handler handler = new Handler();
                         handler.postDelayed(new Runnable() {
@@ -155,24 +176,8 @@ public class GameMemoryActivity extends AppCompatActivity {
                         }, 1000);
                     }
                 }
-
-
-//                if(numOfOpen<2 && imageView.getTag()!="front") {
-//                    imageView.setImageResource(elements.get(position).getPictureID());
-//                    numOfOpen++;
-//                    imageView.setTag("front");
-//
-//                }
-////                else if(imageView.getTag()=="front") {
-////                    imageView.setImageResource(getDrawableByName("board_square"));
-////                    imageView.setTag(null);;
-////                    numOfOpen--;
-////                }
-//                else if(imageView.getTag()=="front") {
-//                    imageView.setImageResource(getDrawableByName("board_square"));
-//                    imageView.setTag(null);;
-//                    numOfOpen--;
-//                }
+                System.out.println("GameMemoryActivity totalMoves=" + totalMoves);
+                System.out.println("GameMemoryActivity totalOpenC=" + totalOpenCards);
             }
         });
     }
@@ -181,6 +186,7 @@ public class GameMemoryActivity extends AppCompatActivity {
         if (mem1.getNumber() == mem2.getNumber()) {
             mem1.leftOpen();
             mem2.leftOpen();
+            addTotalOpenCards();
         } else {
             imageView.setImageResource(elements.get(position1).getPictureBack());
             imageView.setImageResource(elements.get(position).getPictureBack());
@@ -189,9 +195,53 @@ public class GameMemoryActivity extends AppCompatActivity {
         }
     }
 
+    private void addTotalOpenCards() {
+        totalOpenCards += 2;
+        if (totalOpenCards == elements.size()) {
+            Log.e("GameMemoryActivity", "GAME OVER: total moves: " + totalMoves);
+            showSummaryDialog();
+        }
+    }
+
     private int getDrawableByName(String name) {
         int resID = getResources().getIdentifier(name, "drawable", getPackageName());
         return resID;
+    }
+
+    private void changeMovesTextView() {
+        String text = "" + totalMoves;
+        movesNumberTV.setText(text);
+    }
+
+    private void showSummaryDialog() {
+        int correctAnswers = 0;
+        int coins = 0;
+        if (totalMoves < 15) {
+            coins = 3;
+            correctAnswers = 5;
+        } else if (totalMoves < 20) {
+            coins = 2;
+            correctAnswers = 4;
+        } else if (totalMoves < 25) {
+            coins = 1;
+            correctAnswers = 1;
+        }
+        preferencesManagement.addCoins(coins);
+
+        EndGameDialogClass dialog = new EndGameDialogClass(GameMemoryActivity.this, correctAnswers) {
+            @Override
+            public void playAgain() {
+                super.playAgain();
+                activity.finish();
+                Intent intent = new Intent(activity, GameCountActivity.class);
+                intent.putExtra("NEW_NUMBER", newNumber);
+                activity.startActivity(intent);
+                finish();
+            }
+        };
+        dialog.setupPrefManagement(preferencesManagement);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.show();
     }
 
 
@@ -199,6 +249,7 @@ public class GameMemoryActivity extends AppCompatActivity {
         //todo zrobic
         PauseDialogClass dialog = new PauseDialogClass(GameMemoryActivity.this);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setupPrefManagement(preferencesManagement);
         dialog.show();
     }
 }

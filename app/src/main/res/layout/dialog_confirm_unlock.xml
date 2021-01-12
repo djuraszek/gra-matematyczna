@@ -8,7 +8,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/board">
+    android:background="@drawable/bg">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/gBottom"
@@ -60,6 +60,7 @@
         app:layout_constraintBottom_toBottomOf="@id/gImageBottom"
         app:layout_constraintStart_toStartOf="@id/gStart"
         app:layout_constraintEnd_toEndOf="@id/gEnd"
+        app:tint="@color/lightGrey"
         android:src="@drawable/ic_questionmark"/>
 
 
@@ -69,7 +70,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:gravity="center"
-        android:textSize="@dimen/command"
+        android:textSize="@dimen/text_l"
         app:layout_constraintBottom_toBottomOf="@id/gBottomText"
         app:layout_constraintEnd_toEndOf="@id/gEnd"
         app:layout_constraintHorizontal_bias="1.0"
@@ -89,14 +90,14 @@
     >
     <Button
         android:id="@+id/button_no"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:background="@drawable/ic_no"
         android:layout_marginHorizontal="20dp"/>
     <Button
         android:id="@+id/button_yes"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:background="@drawable/ic_yes"
         android:layout_marginHorizontal="20dp" />
 

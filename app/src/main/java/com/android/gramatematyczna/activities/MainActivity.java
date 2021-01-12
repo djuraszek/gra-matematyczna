@@ -32,11 +32,11 @@ public class MainActivity extends AppCompatActivity {
 
         PreferencesManagement preferencesManagement = new PreferencesManagement(MainActivity.this);
         preferencesManagement.manage();
-//        preferencesManagement.setMaxHearts();
-
+        preferencesManagement.setMaxHearts();
+        preferencesManagement.setMaxCoins();
 
         DatabaseHelper dbHelper = new DatabaseHelper(this);
-        dbHelper.clearData();
+        dbHelper.clearData();   //drwaings and games
 
 
         animShake = AnimationUtils.loadAnimation(this, R.anim.shake);
@@ -70,19 +70,16 @@ public class MainActivity extends AppCompatActivity {
     public void goToGamesList(View view){
         animShake.setAnimationListener(new Animation.AnimationListener() {
             @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
+            public void onAnimationStart(Animation animation) {            }
             @Override
             public void onAnimationEnd(Animation arg0) {
-                Intent intent = new Intent(MainActivity.this, GamesListActivity.class);
+//                Intent intent = new Intent(MainActivity.this, GamesListActivity.class);
+                Intent intent = new Intent(MainActivity.this, GamesListActivity2.class);
                 startActivity(intent);
             }
 
             @Override
             public void onAnimationRepeat(Animation animation) {
-
             }
         });
         view.startAnimation(animShake);

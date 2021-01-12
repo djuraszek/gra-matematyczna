@@ -133,11 +133,10 @@ public class PreferencesManagement {
             edit.apply();
         }
     }
-    public void setFullHeart() {
-        hearts = preferences.getInt("hearts", 0);
+    public void setMaxCoins() {
         edit = preferences.edit();
-        hearts =5;
-        edit.putInt("hearts", hearts);
+        coins = 8;
+        edit.putInt("coins", coins);
         edit.apply();
     }
 

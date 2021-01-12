@@ -14,9 +14,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.gramatematyczna.PreferencesManagement;
 import com.android.gramatematyczna.R;
+import com.android.gramatematyczna.VoicePlayerService;
 import com.android.gramatematyczna.activities.GamesListActivity;
+import com.android.gramatematyczna.games.GameCountActivity;
 
 import java.util.List;
 
@@ -51,6 +55,8 @@ public class EndGameDialogClass extends Dialog implements View.OnClickListener {
         heartIV = (ImageView) findViewById(R.id.heart_iv);
 
         setGraphics();
+        if (preferencesManagement != null)
+            playSound();
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -101,6 +107,8 @@ public class EndGameDialogClass extends Dialog implements View.OnClickListener {
     public void goToListScreen() {
         Intent intent = new Intent(activity, GamesListActivity.class);
         activity.startActivity(intent);
+        dismiss();
+        activity.finish();
     }
 
     @Override
@@ -112,4 +120,25 @@ public class EndGameDialogClass extends Dialog implements View.OnClickListener {
     public void onPointerCaptureChanged(boolean hasCapture) {
 
     }
+
+    public void setupPrefManagement(PreferencesManagement preferencesManagement) {
+        this.preferencesManagement = preferencesManagement;
+    }
+
+    VoicePlayerService playerService;
+    PreferencesManagement preferencesManagement;
+
+    public void stopPlayer() {
+        if (playerService != null) playerService.stop();
+    }
+
+    public void playSound() {
+        stopPlayer();
+
+        if (preferencesManagement.playSounds()) {
+            playerService = new VoicePlayerService(activity);
+            playerService.playEndGame(starsNumber);
+        }
+    }
+
 }

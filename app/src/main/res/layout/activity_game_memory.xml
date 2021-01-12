@@ -41,7 +41,7 @@
         android:layout_height="0dp"
         android:layout_marginVertical="40dp"
         android:columnWidth="120dp"
-        android:numColumns="auto_fit"
+        android:numColumns="3"
         android:verticalSpacing="5dp"
         android:horizontalSpacing="5dp"
         android:stretchMode="columnWidth"
@@ -75,9 +75,25 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="16dp"
-            android:layout_marginBottom="2dp">
+            android:layout_marginBottom="7dp">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:layout_marginEnd="8dp"
+                android:layout_gravity="center_vertical"
+                android:text="Ruchy: "
+                android:textSize="@dimen/text_l"/>
 
+            <TextView
+                android:id="@+id/moves_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:layout_gravity="center_vertical"
+                android:text="20"
+                android:textSize="@dimen/text_l"/>
         </LinearLayout>
     </RelativeLayout>
 

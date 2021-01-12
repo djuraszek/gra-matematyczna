@@ -63,6 +63,14 @@ public class VoicePlayerService {
         play();
     }
 
+    public void playEndGame(int stars){
+        if(stars==0) rawFile = R.raw.gwiazdek_0;
+        else if(stars==1) rawFile = R.raw.gwiazdek_1;
+        else if(stars==2) rawFile = R.raw.gwiazdek_2;
+        else if(stars==3) rawFile = R.raw.gwiazdek_3;
+        play();
+    }
+
     public void play(){
         mediaPlayer = MediaPlayer.create(c, rawFile);
         mediaPlayer.setLooping(false); // Set looping

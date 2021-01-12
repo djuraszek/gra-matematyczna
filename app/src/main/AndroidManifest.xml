@@ -17,6 +17,9 @@
             android:name=".activities.GamesListActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".activities.GamesListActivity2"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".activities.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>

@@ -7,7 +7,7 @@ import java.util.Arrays;
  */
 public class GameListItem {
     int id;
-    int color;
+    int color = android.R.color.white;
     int number;
     int gamePictureName;
     int gameType;
@@ -23,6 +23,7 @@ public class GameListItem {
         this.gameType = gameType;
         this.isLocked = isLocked;
     }
+
 
     public GameListItem() {
     }
@@ -53,6 +54,8 @@ public class GameListItem {
         this.unlocked = unlocked;
     }
 
+
+
     public GameListItem(int id,int number, int gameType,boolean unlocked) {
         this.id = id;
         this.number = number;
@@ -60,6 +63,7 @@ public class GameListItem {
         this.gameType = gameType;
         this.unlocked = unlocked;
     }
+
     public boolean isLocked() {
         return isLocked;
     }
@@ -81,6 +85,10 @@ public class GameListItem {
 
     public void setImg(byte[] img) {
         this.img = img;
+    }
+
+    public int getId() {
+        return id;
     }
 
     @Override

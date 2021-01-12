@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.gramatematyczna.PreferencesManagement;
 import com.android.gramatematyczna.R;
+import com.android.gramatematyczna.VoicePlayerService;
 import com.android.gramatematyczna.customdialogs.EndGameDialogClass;
 import com.android.gramatematyczna.customdialogs.PauseDialogClass;
 
@@ -37,6 +38,7 @@ public class GameCountActivity extends AppCompatActivity {
     LinearLayout answersLayout;
     TextView command;
     Game g;
+
     PreferencesManagement preferencesManagement;
     public Integer[] elementsImages;
     public Integer[] buttonsImages;
@@ -156,7 +158,7 @@ public class GameCountActivity extends AppCompatActivity {
         if (level < 5) createLevel(level);
     }
 
-    //todo
+
     public void updateAnswersGridColor() {
         //tutaj bierzemy grid i dla konkretnego lvl ustawiamy
         if (answers[level] == 0) {
@@ -193,6 +195,8 @@ public class GameCountActivity extends AppCompatActivity {
         alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         alertDialog.getWindow().setLayout(100, 100);
         alertDialog.show();
+        //todo play sound
+        playAnswerSound(true);
     }
 
     private void showWrongDialog() {
@@ -224,41 +228,9 @@ public class GameCountActivity extends AppCompatActivity {
 
         alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         alertDialog.show();
+        //todo play sound
+        playAnswerSound(false);
     }
-
-//    private void showSummaryDialog() {
-//        ViewGroup viewGroup = findViewById(android.R.id.content);
-//        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_summary, viewGroup, false);
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//        builder.setView(dialogView);
-//        final AlertDialog alertDialog = builder.create();
-//        Button btn = dialogView.findViewById(R.id.button_next);
-//        btn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                finish();
-//                alertDialog.cancel();
-//            }
-//        });
-//        Button btn2 = dialogView.findViewById(R.id.button_again);
-//        btn2.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-////                level=0;
-////                points=0;
-//                finish();
-//                Intent intent = new Intent(ctx, GameCountActivity.class);
-//                intent.putExtra("NEW_NUMBER", newNumber);
-//                startActivity(intent);
-//                alertDialog.cancel();
-//            }
-//        });
-//        TextView summaryPoints = dialogView.findViewById(R.id.summary_points);
-//        summaryPoints.setText(points + "/5");
-//
-//        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-//        alertDialog.show();
-//    }
 
     private void showSummaryDialog() {
         int correctAnswers = points;
@@ -279,15 +251,35 @@ public class GameCountActivity extends AppCompatActivity {
                 finish();
             }
         };
+        dialog.setupPrefManagement(preferencesManagement);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialog.show();
     }
 
 
     public void pauseGame(View view) {
-        //todo zrobic
+        //zrobic
         PauseDialogClass dialog = new PauseDialogClass(GameCountActivity.this);
+        dialog.setupPrefManagement(preferencesManagement);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialog.show();
+        //dodac glos
     }
+
+    VoicePlayerService playerService;
+
+    public void stopPlayer(){
+        if(playerService!=null) playerService.stop();
+    }
+
+    public void playAnswerSound(boolean answer){
+        stopPlayer();
+        if(preferencesManagement.playSounds()) {
+            playerService = new VoicePlayerService(this);
+            playerService.playAnswerVoice(answer);
+        }
+    }
+
+
+
 }

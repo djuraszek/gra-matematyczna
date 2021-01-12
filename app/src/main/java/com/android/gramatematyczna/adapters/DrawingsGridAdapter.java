@@ -98,7 +98,7 @@ public class DrawingsGridAdapter extends BaseAdapter {
                 @Override
                 public void onClick(View view) {
                     //todo odblokuj kolorowanke
-                    System.out.println("id " + id);
+//                    System.out.println("id " + id);
                     setDrawingLocked(id);
                 }
             });

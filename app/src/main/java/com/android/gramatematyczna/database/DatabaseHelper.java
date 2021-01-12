@@ -155,10 +155,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void clearData() {
         String update = "UPDATE Drawings SET unlocked = 0";
+        String update2 = "UPDATE Games SET unlocked = 0";
 
         SQLiteDatabase db = this.getReadableDatabase();
         db.execSQL(update);
+        db.execSQL(update2);
         db.close();
+        updateGame(1);
+        updateGame(2);
     }
 
 }

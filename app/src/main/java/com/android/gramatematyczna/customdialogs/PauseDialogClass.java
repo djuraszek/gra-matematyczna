@@ -12,7 +12,9 @@ import android.widget.Button;
 
 import androidx.annotation.Nullable;
 
+import com.android.gramatematyczna.PreferencesManagement;
 import com.android.gramatematyczna.R;
+import com.android.gramatematyczna.VoicePlayerService;
 import com.android.gramatematyczna.activities.GamesListActivity;
 import com.android.gramatematyczna.activities.MainActivity;
 
@@ -39,6 +41,7 @@ public class PauseDialogClass extends Dialog implements android.view.View.OnClic
         resumeBtn = (Button) findViewById(R.id.resume_btn);
         resumeBtn.setOnClickListener(this);
 
+
     }
 
     @Override
@@ -62,12 +65,14 @@ public class PauseDialogClass extends Dialog implements android.view.View.OnClic
     public void goToHomeScreen() {
         Intent intent = new Intent(activity, MainActivity.class);
         activity.startActivity(intent);
+        this.dismiss();
         activity.finish();
     }
 
     public void goToListScreen() {
-        Intent intent = new Intent(activity, GamesListActivity.class);
-        activity.startActivity(intent);
+//        Intent intent = new Intent(activity, GamesListActivity.class);
+//        activity.startActivity(intent);
+        this.dismiss();
         activity.finish();
     }
 
@@ -79,5 +84,26 @@ public class PauseDialogClass extends Dialog implements android.view.View.OnClic
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
 
+    }
+
+
+    public void setupPrefManagement(PreferencesManagement preferencesManagement) {
+        this.preferencesManagement = preferencesManagement;
+        playSound();
+    }
+
+    VoicePlayerService playerService;
+    PreferencesManagement preferencesManagement;
+
+    public void stopPlayer() {
+        if (playerService != null) playerService.stop();
+    }
+
+    public void playSound() {
+        stopPlayer();
+        if (preferencesManagement.playSounds()) {
+            playerService = new VoicePlayerService(activity);
+            playerService.playPauseGame();
+        }
     }
 }
