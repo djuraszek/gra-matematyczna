@@ -51,7 +51,7 @@ public class AchievementsActivity extends AppCompatActivity {
         hearts = preferencesManagement.getHearts();
         Log.d("AchievementsActivity","getHearts(): "+hearts);
 //        hearts = 5;
-        if (hearts == 5) {
+        if (hearts >= 5) {
             Toast.makeText(this, "Możesz odblokowac kolorowanke!", Toast.LENGTH_SHORT).show();
             canUnlock = true;
             playSound(true);
@@ -87,7 +87,11 @@ public class AchievementsActivity extends AppCompatActivity {
         getHearts();
         setupHeartsBar();
         setupGridView();
+
+        playUnlockedPicture();
     }
+
+
 
     public void onBackPressed(View view) {
         super.onBackPressed();
@@ -118,6 +122,14 @@ public class AchievementsActivity extends AppCompatActivity {
         if(preferencesManagement.playSounds()) {
              playerService = new VoicePlayerService(this);
             playerService.playUnlockAchievements(canUnlock);
+        }
+    }
+
+    public void playUnlockedPicture(){
+        stopPlayer();
+        if(preferencesManagement.playSounds()) {
+            playerService = new VoicePlayerService(this);
+            playerService.playUnlockedAchievement();
         }
     }
 }

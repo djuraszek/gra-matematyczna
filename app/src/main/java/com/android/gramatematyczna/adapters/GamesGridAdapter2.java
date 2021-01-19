@@ -118,12 +118,12 @@ public class GamesGridAdapter2 extends BaseAdapter {
                         Intent intent = new Intent(context, GameCountActivity.class);
                         intent.putExtra("NEW_NUMBER", gameList.get(i).getNumber());
                         context.startActivity(intent);
-                        ((Activity)context).finish();
+                        ((GamesListActivity2)context).stopPlayer();
                     } else if (gameList.get(i).getGameType() == 1) {
                         Intent intent = new Intent(context, GameMemoryActivity.class);
                         intent.putExtra("NEW_NUMBER", gameList.get(i).getNumber());
                         context.startActivity(intent);
-                        ((Activity)context).finish();
+                        ((GamesListActivity2)context).stopPlayer();
                     }
                 }
             });
@@ -157,6 +157,7 @@ public class GamesGridAdapter2 extends BaseAdapter {
     }
 
     private void showConfirmDialog(final int i, final ImageView download) {
+        playAreYouSure();
         ViewGroup viewGroup = ((Activity) context).findViewById(android.R.id.content);
         View dialogView = LayoutInflater.from((Activity) context).inflate(R.layout.dialog_confirm_unlock, viewGroup, false);
         TextView question = dialogView.findViewById(R.id.confirm_unlock);
@@ -184,6 +185,11 @@ public class GamesGridAdapter2 extends BaseAdapter {
         alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         alertDialog.getWindow().setLayout(100, 100);
         alertDialog.show();
+    }
+
+    public void playAreYouSure(){
+        ((GamesListActivity2)context).playAreYouSure();
+
     }
 
     public void playCantUnlockSound(){

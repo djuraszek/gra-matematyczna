@@ -52,8 +52,8 @@ public class GamesListActivity2 extends AppCompatActivity {
         gameList = helper.getGames();
         System.out.println("GamesListActivity2.onCreate() games: " + gameList.size());
 
-        setupCoinsBar();
-        setupGridView();
+//        setupCoinsBar();
+//        setupGridView();
     }
 
     @Override
@@ -63,6 +63,7 @@ public class GamesListActivity2 extends AppCompatActivity {
         preferencesManagement.manage();
         //little cheat for test:
 //        preferencesManagement.addCoins(8);
+        playerService = null;
 
         DatabaseHelper helper = new DatabaseHelper(this);
         gameList = helper.getGames();
@@ -141,6 +142,14 @@ public class GamesListActivity2 extends AppCompatActivity {
         if (preferencesManagement.playSounds()) {
             playerService = new VoicePlayerService(this);
             playerService.playUnlockGame(canUnlock);
+        }
+    }
+
+    public void playAreYouSure() {
+        stopPlayer();
+        if (preferencesManagement.playSounds()) {
+            playerService = new VoicePlayerService(this);
+            playerService.playYouSureToUnlock();
         }
     }
 

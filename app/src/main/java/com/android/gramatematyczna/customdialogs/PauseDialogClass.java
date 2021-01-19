@@ -27,6 +27,7 @@ public class PauseDialogClass extends Dialog implements android.view.View.OnClic
     public PauseDialogClass(Activity activity) {
         super(activity);
         this.activity = activity;
+        preferencesManagement = new PreferencesManagement(activity);
     }
 
     @Override
@@ -40,20 +41,22 @@ public class PauseDialogClass extends Dialog implements android.view.View.OnClic
         listBtn.setOnClickListener(this);
         resumeBtn = (Button) findViewById(R.id.resume_btn);
         resumeBtn.setOnClickListener(this);
-
-
+        playSound();
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.home_btn:
+                stopPlayer();
                 goToHomeScreen();
                 break;
             case R.id.list_btn:
+                stopPlayer();
                 goToListScreen();
                 break;
             case R.id.resume_btn:
+                stopPlayer();
                 dismiss();
                 break;
             default:
@@ -88,8 +91,8 @@ public class PauseDialogClass extends Dialog implements android.view.View.OnClic
 
 
     public void setupPrefManagement(PreferencesManagement preferencesManagement) {
-        this.preferencesManagement = preferencesManagement;
-        playSound();
+//        this.preferencesManagement = preferencesManagement;
+//        playSound();
     }
 
     VoicePlayerService playerService;
@@ -101,7 +104,9 @@ public class PauseDialogClass extends Dialog implements android.view.View.OnClic
 
     public void playSound() {
         stopPlayer();
-        if (preferencesManagement.playSounds()) {
+        boolean play = preferencesManagement.playSounds();
+        System.out.println("21 playSound "+play);
+        if (play) {
             playerService = new VoicePlayerService(activity);
             playerService.playPauseGame();
         }

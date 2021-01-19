@@ -31,7 +31,12 @@ public class VoicePlayerService {
         play();
     }
 
-    public void playChooseGame(){
+    public void playUnlockedAchievement(){
+        rawFile = R.raw.odblokowano_rys;
+        play();
+    }
+
+    public void playChooseGame() {
         rawFile = R.raw.wybierz_gre;
         play();
     }
@@ -40,41 +45,50 @@ public class VoicePlayerService {
         if (canUnlock)
             rawFile = R.raw.odblokuj_gre;
         else
-            rawFile =  R.raw.aby_odblokowac_gre;
+            rawFile = R.raw.aby_odblokowac_gre;
         play();
     }
 
-    public void playPauseGame(){
-        rawFile = R.raw.przerwa;
+    public void playYouSureToUnlock(){
+        rawFile = R.raw.czy_na_pewno_odb;
+        play();
     }
 
-    public void playAnswerVoice(boolean good){
-        if(good) rawFile = R.raw.bardzo_dobrze;
+    public void playPauseGame() {
+        rawFile = R.raw.przerwa;
+        play();
+    }
+
+    public void playAnswerVoice(boolean good) {
+        if (good) rawFile = R.raw.bardzo_dobrze;
         else rawFile = R.raw.zla_odp;
         play();
     }
 
-    public void readGameCommand(int game){
-        if(game==1){
+    public void readGameCommand(int game) {
+        if (game == 1) {
             rawFile = R.raw.gra_1;
-        }else{
+        } else if (game == 2) {
+            rawFile = R.raw.gra_2;
+        } else {
             return;
         }
         play();
     }
 
-    public void playEndGame(int stars){
-        if(stars==0) rawFile = R.raw.gwiazdek_0;
-        else if(stars==1) rawFile = R.raw.gwiazdek_1;
-        else if(stars==2) rawFile = R.raw.gwiazdek_2;
-        else if(stars==3) rawFile = R.raw.gwiazdek_3;
+    public void playEndGame(int stars) {
+        if (stars == 0) rawFile = R.raw.gwiazdek_0;
+        else if (stars == 1) rawFile = R.raw.gwiazdek_1;
+        else if (stars == 2) rawFile = R.raw.gwiazdek_2;
+        else if (stars == 3) rawFile = R.raw.gwiazdek_3;
         play();
     }
 
-    public void play(){
+
+    public void play() {
         mediaPlayer = MediaPlayer.create(c, rawFile);
         mediaPlayer.setLooping(false); // Set looping
-        mediaPlayer.setVolume(0.05f, 0.05f);
+        mediaPlayer.setVolume(0.08f, 0.08f);
         mediaPlayer.start();
     }
 }

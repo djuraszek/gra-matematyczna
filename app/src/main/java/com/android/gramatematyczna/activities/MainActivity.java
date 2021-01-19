@@ -36,11 +36,11 @@ public class MainActivity extends AppCompatActivity {
         preferencesManagement.setMaxCoins();
 
         DatabaseHelper dbHelper = new DatabaseHelper(this);
-        dbHelper.clearData();   //drwaings and games
+        dbHelper.clearData();   //drawings and games
 
 
         animShake = AnimationUtils.loadAnimation(this, R.anim.shake);
-        System.out.println("MainActivity.onCreate()");
+        System.out.println("MainActivity.onCreate() 1");
 //        cleanData();
     }
 

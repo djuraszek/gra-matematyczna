@@ -161,4 +161,5 @@ public class PreferencesManagement {
         edit.putInt("coins", 0);
         edit.apply();
     }
+
 }

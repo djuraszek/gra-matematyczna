@@ -77,6 +77,7 @@ public class GameCountActivity extends AppCompatActivity {
         generateButtons();
 
         answersLayout = findViewById(R.id.answers_layout);
+        playSound();
     }
 
 
@@ -233,6 +234,7 @@ public class GameCountActivity extends AppCompatActivity {
     }
 
     private void showSummaryDialog() {
+        stopPlayer();
         int correctAnswers = points;
         int coins = 0;
         if (correctAnswers > 0 && correctAnswers < 3) coins = 1;
@@ -258,6 +260,7 @@ public class GameCountActivity extends AppCompatActivity {
 
 
     public void pauseGame(View view) {
+        stopPlayer();
         //zrobic
         PauseDialogClass dialog = new PauseDialogClass(GameCountActivity.this);
         dialog.setupPrefManagement(preferencesManagement);
@@ -280,6 +283,12 @@ public class GameCountActivity extends AppCompatActivity {
         }
     }
 
-
+    public void playSound() {
+        stopPlayer();
+        if (preferencesManagement.playSounds()) {
+            playerService = new VoicePlayerService(this);
+            playerService.readGameCommand(1);
+        }
+    }
 
 }

@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.gramatematyczna.PreferencesManagement;
 import com.android.gramatematyczna.R;
+import com.android.gramatematyczna.VoicePlayerService;
 import com.android.gramatematyczna.activities.GameActivity;
 import com.android.gramatematyczna.customdialogs.EndGameDialogClass;
 import com.android.gramatematyczna.customdialogs.PauseDialogClass;
@@ -70,7 +71,7 @@ public class GameMemoryActivity extends AppCompatActivity {
         movesNumberTV.setText("0");
 
         createGame();
-
+        playSound();
     }
 
     public void createGame() {
@@ -214,6 +215,7 @@ public class GameMemoryActivity extends AppCompatActivity {
     }
 
     private void showSummaryDialog() {
+        stopPlayer();
         int correctAnswers = 0;
         int coins = 0;
         if (totalMoves < 15) {
@@ -251,5 +253,19 @@ public class GameMemoryActivity extends AppCompatActivity {
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialog.setupPrefManagement(preferencesManagement);
         dialog.show();
+    }
+
+    VoicePlayerService playerService;
+
+    public void stopPlayer(){
+        if(playerService!=null) playerService.stop();
+    }
+
+    public void playSound() {
+        stopPlayer();
+        if (preferencesManagement.playSounds()) {
+            playerService = new VoicePlayerService(this);
+            playerService.readGameCommand(2);
+        }
     }
 }

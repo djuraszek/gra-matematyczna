@@ -1,0 +1,1418 @@
+Index: app/src/main/java/com/android/gramatematyczna/PreferencesManagement.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.android.gramatematyczna;\r\n\r\nimport android.app.Activity;\r\nimport android.content.Context;\r\nimport android.content.Intent;\r\nimport android.content.SharedPreferences;\r\nimport android.util.Log;\r\nimport android.view.View;\r\nimport android.widget.Button;\r\nimport android.widget.TextView;\r\n\r\nimport java.util.Locale;\r\n\r\nimport static android.content.Context.MODE_PRIVATE;\r\n\r\npublic class PreferencesManagement {\r\n    Context context;\r\n    SharedPreferences preferences;\r\n    SharedPreferences.Editor edit;\r\n\r\n    Button musicBtn, soundBtn;\r\n    TextView moneyTV;\r\n\r\n    int coins=0,hearts=0;\r\n\r\n    BackgroundSoundService soundService;\r\n\r\n    public PreferencesManagement(Context c) {\r\n        context = c;\r\n        View rootView = ((Activity) context).getWindow().getDecorView().findViewById(android.R.id.content);\r\n\r\n        preferences = context.getSharedPreferences(\"Settings\", MODE_PRIVATE);\r\n        musicBtn = rootView.findViewById(R.id.music_btn);\r\n        soundBtn = rootView.findViewById(R.id.sound_btn);\r\n        moneyTV = rootView.findViewById(R.id.moneyTV);\r\n\r\n        soundService = new BackgroundSoundService();\r\n\r\n        setup();\r\n    }\r\n\r\n    public void setup() {\r\n        coins = preferences.getInt(\"coins\", 0);\r\n        hearts = preferences.getInt(\"hearts\", 0);\r\n\r\n\r\n        boolean isMusicOn = preferences.getBoolean(\"isMusicOn\", true);\r\n        if (!isMusicOn) {\r\n            musicBtn.setBackground(context.getDrawable(R.drawable.ic_music_off));\r\n        } else {\r\n            musicBtn.setBackground(context.getDrawable(R.drawable.ic_music_on));\r\n            Intent intent = new Intent(context, BackgroundSoundService.class);\r\n            context.startService(intent);\r\n        }\r\n        boolean isSoundOn = preferences.getBoolean(\"isSoundOn\", true);\r\n        if (!isSoundOn) soundBtn.setBackground(context.getDrawable(R.drawable.ic_sound_off));\r\n        else soundBtn.setBackground(context.getDrawable(R.drawable.ic_sound_on));\r\n    }\r\n\r\n    public void manage() {\r\n        musicBtn.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View view) {\r\n                boolean isMusicOn = preferences.getBoolean(\"isMusicOn\", true);\r\n                Log.d(\"PreferencesManagement\", \"Music change to on = \" + !isMusicOn);\r\n                edit = preferences.edit();\r\n                edit.putBoolean(\"isMusicOn\", !isMusicOn);\r\n                edit.apply();\r\n                if (isMusicOn) {\r\n                    view.setBackground(context.getDrawable(R.drawable.ic_music_off));\r\n                    Intent intent = new Intent(context, BackgroundSoundService.class);\r\n                    context.stopService(intent);\r\n                } else {\r\n                    view.setBackground(context.getDrawable(R.drawable.ic_music_on));\r\n                    Intent intent = new Intent(context, BackgroundSoundService.class);\r\n                    context.startService(intent);\r\n                }\r\n            }\r\n        });\r\n\r\n        soundBtn.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View view) {\r\n                boolean isSoundOn = preferences.getBoolean(\"isSoundOn\", true);\r\n                Log.d(\"PreferencesManagement\", \"Sound change to on = \" + !isSoundOn);\r\n                edit = preferences.edit();\r\n                edit.putBoolean(\"isSoundOn\", !isSoundOn);\r\n                edit.apply();\r\n                if (isSoundOn) view.setBackground(context.getDrawable(R.drawable.ic_sound_off));\r\n                else view.setBackground(context.getDrawable(R.drawable.ic_sound_on));\r\n            }\r\n        });\r\n    }\r\n\r\n\r\n    public void addCoins(int nr) {\r\n        coins = preferences.getInt(\"coins\", 0);\r\n        edit = preferences.edit();\r\n\r\n        coins += nr;\r\n        edit.putInt(\"coins\", coins);\r\n        edit.apply();\r\n\r\n        //jesli dostajemy wszystki pkt to serduszko tez\r\n        if(nr==3){\r\n            addHeart();\r\n        }\r\n    }\r\n\r\n    public void addHeart() {\r\n        hearts = preferences.getInt(\"hearts\", 0);\r\n        edit = preferences.edit();\r\n\r\n        hearts += 1;\r\n        edit.putInt(\"hearts\", hearts);\r\n        edit.apply();\r\n    }\r\n\r\n    public int getCoins() {\r\n        return coins;\r\n    }\r\n\r\n    public int getHearts() {\r\n        return hearts;\r\n    }\r\n\r\n\r\n    public void clearHearts(){\r\n        edit = preferences.edit();\r\n        edit.putInt(\"hearts\", 0);\r\n        edit.apply();\r\n    }\r\n    public void clearCoins(){\r\n        edit = preferences.edit();\r\n        edit.putInt(\"coins\", 0);\r\n        edit.apply();\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/android/gramatematyczna/PreferencesManagement.java	(revision 4df75b45e1ad62915bf08e834136029afce2fb7d)
++++ app/src/main/java/com/android/gramatematyczna/PreferencesManagement.java	(date 1610302715337)
+@@ -21,14 +21,19 @@
+     Button musicBtn, soundBtn;
+     TextView moneyTV;
+ 
+-    int coins=0,hearts=0;
++    int coins = 0, hearts = 0;
+ 
++    int maxCoins = 8;
++    int maxHearts = 5;
++
+     BackgroundSoundService soundService;
+ 
+     public PreferencesManagement(Context c) {
+         context = c;
+         View rootView = ((Activity) context).getWindow().getDecorView().findViewById(android.R.id.content);
+ 
++
++
+         preferences = context.getSharedPreferences("Settings", MODE_PRIVATE);
+         musicBtn = rootView.findViewById(R.id.music_btn);
+         soundBtn = rootView.findViewById(R.id.sound_btn);
+@@ -43,7 +48,6 @@
+         coins = preferences.getInt("coins", 0);
+         hearts = preferences.getInt("hearts", 0);
+ 
+-
+         boolean isMusicOn = preferences.getBoolean("isMusicOn", true);
+         if (!isMusicOn) {
+             musicBtn.setBackground(context.getDrawable(R.drawable.ic_music_off));
+@@ -98,22 +102,31 @@
+         edit = preferences.edit();
+ 
+         coins += nr;
++        if (coins > maxCoins) coins = maxCoins;
+         edit.putInt("coins", coins);
+         edit.apply();
+ 
+         //jesli dostajemy wszystki pkt to serduszko tez
+-        if(nr==3){
++        if (nr == 3) {
+             addHeart();
+         }
+     }
+ 
++    public void setMaxHearts(){
++        edit = preferences.edit();
++        edit.putInt("hearts", maxHearts);
++        edit.apply();
++    }
++
+     public void addHeart() {
+-        hearts = preferences.getInt("hearts", 0);
+-        edit = preferences.edit();
++        if (hearts <= maxHearts) {
++            hearts = preferences.getInt("hearts", 0);
++            edit = preferences.edit();
+ 
+-        hearts += 1;
+-        edit.putInt("hearts", hearts);
+-        edit.apply();
++            hearts += 1;
++            edit.putInt("hearts", hearts);
++            edit.apply();
++        }
+     }
+ 
+     public int getCoins() {
+@@ -125,12 +138,14 @@
+     }
+ 
+ 
+-    public void clearHearts(){
++    public void clearHearts() {
++        Log.d("PreferencesManagement","hearts cleared");
+         edit = preferences.edit();
+         edit.putInt("hearts", 0);
+         edit.apply();
+     }
+-    public void clearCoins(){
++
++    public void clearCoins() {
+         edit = preferences.edit();
+         edit.putInt("coins", 0);
+         edit.apply();
+Index: app/src/main/java/com/android/gramatematyczna/adapters/DrawingsGridAdapter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.android.gramatematyczna.adapters;\r\n\r\nimport android.content.Context;\r\nimport android.graphics.drawable.Drawable;\r\nimport android.view.LayoutInflater;\r\nimport android.view.View;\r\nimport android.view.ViewGroup;\r\nimport android.widget.BaseAdapter;\r\nimport android.widget.ImageView;\r\n\r\nimport androidx.cardview.widget.CardView;\r\n\r\nimport com.android.gramatematyczna.R;\r\n\r\npublic class DrawingsGridAdapter  extends BaseAdapter {\r\n    Context context;\r\n    int drawings[];\r\n    LayoutInflater inflater;\r\n\r\n    public DrawingsGridAdapter(Context applicationContext, int[] drawings) {\r\n        this.context = applicationContext;\r\n        this.drawings = drawings;\r\n        inflater = (LayoutInflater.from(applicationContext));\r\n    }\r\n    @Override\r\n    public int getCount() {\r\n        return drawings.length;\r\n    }\r\n    @Override\r\n    public Object getItem(int i) {\r\n        return null;\r\n    }\r\n    @Override\r\n    public long getItemId(int i) {\r\n        return 0;\r\n    }\r\n\r\n    @Override\r\n    public View getView(int i, View view, ViewGroup viewGroup) {\r\n        view = inflater.inflate(R.layout.item_grid_drawings, null); // inflate the layout\r\n        CardView card = (CardView) view.findViewById(R.id.cardview); // get the reference of ImageView\r\n        Drawable drawing = context.getDrawable(drawings[i]);\r\n        ImageView background = (ImageView)view.findViewById(R.id.card_background);\r\n        ImageView lock = (ImageView)view.findViewById(R.id.item_lock);\r\n        ImageView download = (ImageView)view.findViewById(R.id.item_unlock);\r\n        background.setBackground(drawing); // set logo images\r\n//        card.setCardBackgroundColor(drawing); // set logo images\r\n        return view;\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/android/gramatematyczna/adapters/DrawingsGridAdapter.java	(revision 4df75b45e1ad62915bf08e834136029afce2fb7d)
++++ app/src/main/java/com/android/gramatematyczna/adapters/DrawingsGridAdapter.java	(date 1610302608641)
+@@ -1,35 +1,53 @@
+ package com.android.gramatematyczna.adapters;
+ 
+-import android.content.Context;
++import android.app.Activity;
++import android.graphics.BitmapFactory;
++import android.graphics.drawable.BitmapDrawable;
++import android.graphics.drawable.ColorDrawable;
+ import android.graphics.drawable.Drawable;
++import android.util.Log;
+ import android.view.LayoutInflater;
+ import android.view.View;
+ import android.view.ViewGroup;
++import android.view.Window;
+ import android.widget.BaseAdapter;
+ import android.widget.ImageView;
+ 
+ import androidx.cardview.widget.CardView;
+ 
++import com.android.gramatematyczna.PreferencesManagement;
+ import com.android.gramatematyczna.R;
++import com.android.gramatematyczna.activities.AchievementsActivity;
++import com.android.gramatematyczna.classes.Drawing;
++import com.android.gramatematyczna.customdialogs.DialogShowCode;
++import com.android.gramatematyczna.database.DatabaseHelper;
++
++import java.util.ArrayList;
+ 
+-public class DrawingsGridAdapter  extends BaseAdapter {
+-    Context context;
+-    int drawings[];
++public class DrawingsGridAdapter extends BaseAdapter {
++    Activity activity;
++    ArrayList<Drawing> drawings;
+     LayoutInflater inflater;
+ 
+-    public DrawingsGridAdapter(Context applicationContext, int[] drawings) {
+-        this.context = applicationContext;
++    boolean canUnlock = false;
++
++    public DrawingsGridAdapter(Activity applicationContext, ArrayList<Drawing> drawings, boolean canUnlock) {
++        this.activity = applicationContext;
+         this.drawings = drawings;
++        this.canUnlock = canUnlock;
+         inflater = (LayoutInflater.from(applicationContext));
+     }
++
+     @Override
+     public int getCount() {
+-        return drawings.length;
++        return drawings.size();
+     }
++
+     @Override
+     public Object getItem(int i) {
+         return null;
+     }
++
+     @Override
+     public long getItemId(int i) {
+         return 0;
+@@ -37,14 +55,77 @@
+ 
+     @Override
+     public View getView(int i, View view, ViewGroup viewGroup) {
++        final Drawing drawing = drawings.get(i);
++        final int id = i;
+         view = inflater.inflate(R.layout.item_grid_drawings, null); // inflate the layout
+         CardView card = (CardView) view.findViewById(R.id.cardview); // get the reference of ImageView
+-        Drawable drawing = context.getDrawable(drawings[i]);
+-        ImageView background = (ImageView)view.findViewById(R.id.card_background);
+-        ImageView lock = (ImageView)view.findViewById(R.id.item_lock);
+-        ImageView download = (ImageView)view.findViewById(R.id.item_unlock);
+-        background.setBackground(drawing); // set logo images
+-//        card.setCardBackgroundColor(drawing); // set logo images
++        boolean unlocked = drawing.isUnlocked();
++        byte[] b = drawing.getImg();
++        final String code = drawing.getCode();
++        //todo
++        if (b != null) {
++//            System.out.println("Drawing " + i + " not null");
++            Drawable drawable = new BitmapDrawable(BitmapFactory.decodeByteArray(b, 0, b.length));
++            ImageView background = (ImageView) view.findViewById(R.id.card_background);
++            background.setBackground(drawable); // set logo images
++        } else {
++//            Log.e("DrawingsGridAdapter", "Drawing " + i + " is null");
++//            System.out.println("Drawing " + i + " is null");
++        }
++
++        ImageView lock = (ImageView) view.findViewById(R.id.item_lock);
++        ImageView download = (ImageView) view.findViewById(R.id.item_unlock);
++
++        if (unlocked) {
++            lock.setVisibility(View.INVISIBLE);
++            download.setVisibility(View.INVISIBLE);
++            //todo on click show code
++            card.setOnClickListener(new View.OnClickListener() {
++                @Override
++                public void onClick(View view) {
++                    DialogShowCode dialog = new DialogShowCode(activity, code);
++                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
++                    dialog.setCancelable(true);
++                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
++                    dialog.show();
++                }
++            });
++        } else if (!unlocked && canUnlock) {
++            //jest zablokowane, ale mozna odblokowac
++            lock.setVisibility(View.INVISIBLE);
++            download.setVisibility(View.VISIBLE);
++            //todo on click show code
++            card.setOnClickListener(new View.OnClickListener() {
++                @Override
++                public void onClick(View view) {
++                    //todo odblokuj kolorowanke
++                    System.out.println("id " + id);
++                    setDrawingLocked(id);
++                }
++            });
++        } else {
++            //jest zablokowane i nie mozna odblokowac
++            lock.setVisibility(View.VISIBLE);
++            download.setVisibility(View.INVISIBLE);
++        }
+         return view;
+     }
++
++    public void setDrawingLocked(int index) {
++        drawings.get(index).setUnlocked(true);
++        //zmien serduszka
++        PreferencesManagement preferences = new PreferencesManagement(activity);
++        preferences.clearHearts();
++        DatabaseHelper dbHelper = new DatabaseHelper(activity);
++        dbHelper.updateDrawing(drawings.get(index).getId());
++
++        notifyDataSetChanged();
++        updatedGrid();
++    }
++
++    public void updatedGrid(){
++        System.out.println("DrawingsGridAdapter: updateGrid()");
++        ((AchievementsActivity)activity).unlockedPicture();
++    }
++
+ }
+\ No newline at end of file
+Index: app/src/main/java/com/android/gramatematyczna/activities/AchievementsActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.android.gramatematyczna.activities;\r\n\r\nimport androidx.appcompat.app.AppCompatActivity;\r\n\r\nimport android.os.Bundle;\r\nimport android.view.View;\r\nimport android.view.Window;\r\nimport android.view.WindowManager;\r\nimport android.widget.GridView;\r\nimport android.widget.ImageView;\r\nimport android.widget.Toast;\r\n\r\nimport com.android.gramatematyczna.adapters.DrawingsGridAdapter;\r\nimport com.android.gramatematyczna.PreferencesManagement;\r\nimport com.android.gramatematyczna.R;\r\n\r\npublic class AchievementsActivity extends AppCompatActivity {\r\n\r\n    int[] drawingList = {R.drawable.rys_1,R.drawable.rys_2,R.drawable.rys_3,R.drawable.rys_4,R.drawable.rys_5,R.drawable.rys_6,R.drawable.rys_7,R.drawable.rys_8,R.drawable.rys_9,R.drawable.rys_10};\r\n    int hearts = 0;\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        requestWindowFeature(Window.FEATURE_NO_TITLE);\r\n        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,\r\n                WindowManager.LayoutParams.FLAG_FULLSCREEN\r\n        );\r\n        setContentView(R.layout.activity_achievements);\r\n        PreferencesManagement preferencesManagement = new PreferencesManagement(AchievementsActivity.this);\r\n        preferencesManagement.manage();\r\n        hearts = preferencesManagement.getHearts();\r\n\r\n        DrawingsGridAdapter adapter = new DrawingsGridAdapter(AchievementsActivity.this, drawingList);\r\n        GridView gridView = (GridView)findViewById(R.id.gridView);\r\n        gridView.setAdapter(adapter);\r\n        setupHeartsBar();\r\n    }\r\n\r\n    public void onBackPressed(View view) {\r\n        super.onBackPressed();\r\n    }\r\n\r\n    int[] coinsIV = {R.id.bar_heart1,R.id.bar_heart2,R.id.bar_heart3,R.id.bar_heart4,R.id.bar_heart5};\r\n    public void setupHeartsBar(){\r\n        for(int i=0; i<hearts;i++){\r\n            ((ImageView)findViewById(coinsIV[i])).setBackground(getResources().getDrawable(R.drawable.heart));\r\n            if(i==4) i=hearts;\r\n        }\r\n        if(hearts==5){\r\n            Toast.makeText(this,\"Możesz odblokowac kolorowanke!\",Toast.LENGTH_SHORT).show();\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/android/gramatematyczna/activities/AchievementsActivity.java	(revision 4df75b45e1ad62915bf08e834136029afce2fb7d)
++++ app/src/main/java/com/android/gramatematyczna/activities/AchievementsActivity.java	(date 1610302837040)
+@@ -3,6 +3,7 @@
+ import androidx.appcompat.app.AppCompatActivity;
+ 
+ import android.os.Bundle;
++import android.util.Log;
+ import android.view.View;
+ import android.view.Window;
+ import android.view.WindowManager;
+@@ -13,11 +14,18 @@
+ import com.android.gramatematyczna.adapters.DrawingsGridAdapter;
+ import com.android.gramatematyczna.PreferencesManagement;
+ import com.android.gramatematyczna.R;
++import com.android.gramatematyczna.classes.Drawing;
++import com.android.gramatematyczna.database.DatabaseHelper;
++
++import java.util.ArrayList;
+ 
+ public class AchievementsActivity extends AppCompatActivity {
+ 
+-    int[] drawingList = {R.drawable.rys_1,R.drawable.rys_2,R.drawable.rys_3,R.drawable.rys_4,R.drawable.rys_5,R.drawable.rys_6,R.drawable.rys_7,R.drawable.rys_8,R.drawable.rys_9,R.drawable.rys_10};
++    int[] drawingList = {R.drawable.rys_1, R.drawable.rys_2, R.drawable.rys_3, R.drawable.rys_4, R.drawable.rys_5, R.drawable.rys_6, R.drawable.rys_7, R.drawable.rys_8, R.drawable.rys_9, R.drawable.rys_10};
+     int hearts = 0;
++    boolean canUnlock = false;
++    PreferencesManagement preferencesManagement;
++
+     @Override
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+@@ -26,28 +34,71 @@
+                 WindowManager.LayoutParams.FLAG_FULLSCREEN
+         );
+         setContentView(R.layout.activity_achievements);
+-        PreferencesManagement preferencesManagement = new PreferencesManagement(AchievementsActivity.this);
++        preferencesManagement = new PreferencesManagement(AchievementsActivity.this);
+         preferencesManagement.manage();
++
++        getHearts();
++        setupGridView();
++        setupHeartsBar();
++    }
++
++    public void getHearts(){
+         hearts = preferencesManagement.getHearts();
++        Log.d("AchievementsActivity","getHearts(): "+hearts);
++//        hearts = 5;
++        if (hearts == 5) {
++            Toast.makeText(this, "Możesz odblokowac kolorowanke!", Toast.LENGTH_SHORT).show();
++            canUnlock = true;
++        }else{
++            canUnlock = false;
++        }
++    }
+ 
+-        DrawingsGridAdapter adapter = new DrawingsGridAdapter(AchievementsActivity.this, drawingList);
+-        GridView gridView = (GridView)findViewById(R.id.gridView);
++    public void setupGridView(){
++        Log.d("AchievementsActivity","setupGridView()");
++        DatabaseHelper dbHelper = new DatabaseHelper(this);
++//        dbHelper.clearData();
++        ArrayList<Drawing> drawings = dbHelper.getDrawings();
++
++        Log.e("AchievementsActivity", "drawings: " + drawings.size());
++        DrawingsGridAdapter adapter = new DrawingsGridAdapter(AchievementsActivity.this, drawings, canUnlock) {
++//            @Override
++//            public void updatedGrid() {
++//                Log.d("DrawingsGridAdapter","updateGrid()");
++////                super.updatedGrid();
++////                setupHeartsBar();
++////                setupGridView();
++//            }
++        };
++        GridView gridView = (GridView) findViewById(R.id.gridView);
++        gridView.invalidateViews();
+         gridView.setAdapter(adapter);
++    }
++
++    public void unlockedPicture(){
++        preferencesManagement = new PreferencesManagement(this);
++        preferencesManagement.clearHearts();
++        getHearts();
+         setupHeartsBar();
++        setupGridView();
+     }
+ 
+     public void onBackPressed(View view) {
+         super.onBackPressed();
++        finish();
+     }
+ 
+-    int[] coinsIV = {R.id.bar_heart1,R.id.bar_heart2,R.id.bar_heart3,R.id.bar_heart4,R.id.bar_heart5};
+-    public void setupHeartsBar(){
+-        for(int i=0; i<hearts;i++){
+-            ((ImageView)findViewById(coinsIV[i])).setBackground(getResources().getDrawable(R.drawable.heart));
+-            if(i==4) i=hearts;
+-        }
+-        if(hearts==5){
+-            Toast.makeText(this,"Możesz odblokowac kolorowanke!",Toast.LENGTH_SHORT).show();
++    int[] coinsIV = {R.id.bar_heart1, R.id.bar_heart2, R.id.bar_heart3, R.id.bar_heart4, R.id.bar_heart5};
++
++    public void setupHeartsBar() {
++        Log.e("AchievementsActivity","setupHeartsBar(): "+hearts);
++        for (int i = 0; i < coinsIV.length; i++) {
++            if(i<hearts) {
++                ((ImageView) findViewById(coinsIV[i])).setBackground(getResources().getDrawable(R.drawable.heart));
++//                if (i == 4) i = hearts;
++            }else{
++                ((ImageView) findViewById(coinsIV[i])).setBackground(getResources().getDrawable(R.drawable.heart_2));
++            }
+         }
+     }
+ }
+Index: app/src/main/java/com/android/gramatematyczna/classes/Drawing.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/android/gramatematyczna/classes/Drawing.java	(date 1610294169970)
++++ app/src/main/java/com/android/gramatematyczna/classes/Drawing.java	(date 1610294169970)
+@@ -0,0 +1,59 @@
++package com.android.gramatematyczna.classes;
++
++import java.util.Arrays;
++
++public class Drawing {
++    int id;
++    String code;
++    boolean unlocked = false;
++    byte[] img;
++    //0-count elements, 1-memory game
++
++    public Drawing() {
++    }
++
++    public Drawing(int id, String code, boolean unlocked) {
++        this.id = id;
++        this.code = code;
++        this.unlocked = unlocked;
++    }
++
++
++    public int getId() {
++        return id;
++    }
++    public void setId(int id) {
++        this.id = id;
++    }
++    public String getCode() {
++        return code;
++    }
++    public void setCode(String code) {
++        this.code = code;
++    }
++
++    public boolean isUnlocked() {
++        return unlocked;
++    }
++
++    public void setUnlocked(boolean unlocked) {
++        this.unlocked = unlocked;
++    }
++
++    public byte[] getImg() {
++        return img;
++    }
++
++    public void setImg(byte[] img) {
++        this.img = img;
++    }
++
++    @Override
++    public String toString() {
++        return "Drawing{" +
++                "id=" + id +
++                ", code='" + code + '\'' +
++                ", unlocked=" + unlocked +
++                '}';
++    }
++}
+Index: app/src/main/java/com/android/gramatematyczna/customdialogs/DialogUnlockDrawing.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/android/gramatematyczna/customdialogs/DialogUnlockDrawing.java	(date 1610049156775)
++++ app/src/main/java/com/android/gramatematyczna/customdialogs/DialogUnlockDrawing.java	(date 1610049156775)
+@@ -0,0 +1,83 @@
++package com.android.gramatematyczna.customdialogs;
++
++import android.app.Activity;
++import android.app.Dialog;
++import android.content.Intent;
++import android.os.Bundle;
++import android.view.KeyboardShortcutGroup;
++import android.view.Menu;
++import android.view.View;
++import android.view.Window;
++import android.widget.Button;
++
++import androidx.annotation.Nullable;
++
++import com.android.gramatematyczna.R;
++import com.android.gramatematyczna.activities.GamesListActivity;
++import com.android.gramatematyczna.activities.MainActivity;
++
++import java.util.List;
++
++public class DialogUnlockDrawing extends Dialog implements View.OnClickListener {
++    public Activity activity;
++    Button homeBtn, resumeBtn, listBtn;
++
++    public DialogUnlockDrawing(Activity activity) {
++        super(activity);
++        this.activity = activity;
++    }
++
++    @Override
++    protected void onCreate(Bundle savedInstanceState) {
++        super.onCreate(savedInstanceState);
++        requestWindowFeature(Window.FEATURE_NO_TITLE);
++        setContentView(R.layout.dialog_pause);
++        homeBtn = (Button) findViewById(R.id.home_btn);
++        homeBtn.setOnClickListener(this);
++        listBtn = (Button) findViewById(R.id.list_btn);
++        listBtn.setOnClickListener(this);
++        resumeBtn = (Button) findViewById(R.id.resume_btn);
++        resumeBtn.setOnClickListener(this);
++
++    }
++
++    @Override
++    public void onClick(View view) {
++        switch (view.getId()) {
++            case R.id.home_btn:
++                goToHomeScreen();
++                break;
++            case R.id.list_btn:
++                goToListScreen();
++                break;
++            case R.id.resume_btn:
++                dismiss();
++                break;
++            default:
++                break;
++        }
++        dismiss();
++    }
++
++    public void goToHomeScreen() {
++        Intent intent = new Intent(activity, MainActivity.class);
++        activity.startActivity(intent);
++        activity.finish();
++    }
++
++    public void goToListScreen() {
++        Intent intent = new Intent(activity, GamesListActivity.class);
++        activity.startActivity(intent);
++        activity.finish();
++    }
++
++    @Override
++    public void onProvideKeyboardShortcuts(List<KeyboardShortcutGroup> data, @Nullable Menu menu, int deviceId) {
++
++    }
++
++    @Override
++    public void onPointerCaptureChanged(boolean hasCapture) {
++
++    }
++}
+Index: app/src/main/res/layout/dialog_show_code.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/dialog_show_code.xml	(date 1610049156421)
++++ app/src/main/res/layout/dialog_show_code.xml	(date 1610049156421)
+@@ -0,0 +1,98 @@
++<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    android:layout_width="wrap_content"
++    android:layout_height="450dp"
++    android:layout_centerInParent="true">
++
++
++    <ImageView
++        android:layout_width="match_parent"
++        android:layout_height="match_parent"
++        android:layout_marginStart="8dp"
++        android:layout_marginTop="16dp"
++        android:layout_marginEnd="8dp"
++        android:layout_marginBottom="0dp"
++        android:background="@drawable/bg" />
++
++    <TextView
++        android:id="@+id/layout_stars"
++        android:layout_width="match_parent"
++        android:layout_marginStart="80dp"
++        android:layout_height="110dp"
++        android:layout_centerHorizontal="true"
++        android:layout_marginTop="50dp"
++        android:textAlignment="center"
++        android:textStyle="bold"
++        android:textColor="@color/brown"
++        android:text="KOD DO ODBLOKOWANIA RYSUNKU"
++        android:textSize="30dp"
++        android:orientation="horizontal"/>
++
++
++
++    <RelativeLayout
++        android:id="@+id/code_container"
++        android:layout_width="200dp"
++        android:layout_height="90dp"
++        android:layout_below="@id/layout_stars"
++        android:layout_marginStart="40dp"
++        android:layout_centerHorizontal="true"
++        android:layout_marginTop="18dp"
++        android:layout_marginEnd="40dp"
++        android:layout_marginBottom="20dp"
++        android:background="@drawable/bg_table"
++        android:orientation="vertical"
++        android:paddingStart="16dp"
++        android:paddingTop="32dp"
++        android:paddingEnd="16dp">
++
++            <TextView
++                android:id="@+id/drawing_code"
++                android:layout_width="wrap_content"
++                android:layout_height="wrap_content"
++                android:text="a5st3"
++                android:layout_centerInParent="true"
++                android:textSize="@dimen/text_l" />
++
++    </RelativeLayout>
++
++    <TextView
++        android:layout_below="@+id/code_container"
++        android:layout_width="match_parent"
++        android:layout_marginStart="80dp"
++        android:layout_height="wrap_content"
++        android:layout_centerHorizontal="true"
++        android:text="Aby pobrac obrazek wejdz na stronę:\nwww.gramatematyczna.pl"
++        android:textColor="@color/brown"
++        android:textAlignment="center"
++        android:textSize="20dp"
++        />
++
++
++    <LinearLayout
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:layout_alignParentBottom="true"
++        android:layout_centerHorizontal="true"
++        android:layout_marginEnd="8dp"
++        android:layout_marginBottom="18dp"
++        android:orientation="horizontal">
++
++        <Button
++            android:id="@+id/close_btn"
++            android:layout_width="60dp"
++            android:layout_height="60dp"
++            android:layout_marginBottom="24dp"
++            android:background="@drawable/ic_close"
++            android:onClick="buttonClick" />
++    </LinearLayout>
++    <!--    <TextView-->
++    <!--        android:layout_width="wrap_content"-->
++    <!--        android:layout_height="wrap_content"-->
++    <!--        android:layout_centerHorizontal="true"-->
++    <!--        android:layout_marginTop="100dp"-->
++    <!--        android:text="PRZERWA"-->
++    <!--        android:textColor="@color/white"-->
++    <!--        android:textSize="@dimen/text_xxl"-->
++    <!--        android:textStyle="bold" />-->
++
++</RelativeLayout>
+\ No newline at end of file
+Index: app/src/main/res/layout/activity_main.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<RelativeLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\"\r\n    android:layout_width=\"match_parent\"\r\n    android:layout_height=\"match_parent\"\r\n    android:background=\"@drawable/background_blue\"\r\n    tools:context=\".activities.MainActivity\">\r\n\r\n\r\n    <include layout=\"@layout/component_sound_board\"/>\r\n\r\n    <ImageView\r\n        android:layout_width=\"match_parent\"\r\n        android:layout_height=\"250dp\"\r\n        android:layout_marginTop=\"100dp\"\r\n        android:layout_marginStart=\"8dp\"\r\n        android:layout_marginEnd=\"8dp\"\r\n        android:layout_marginBottom=\"0dp\"\r\n        android:src=\"@drawable/my_logo_2\" />\r\n\r\n    <RelativeLayout\r\n        android:layout_width=\"match_parent\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:layout_marginTop=\"400dp\"\r\n        android:orientation=\"vertical\">\r\n\r\n        <Button\r\n            android:id=\"@+id/start_btn\"\r\n            android:layout_width=\"120dp\"\r\n            android:layout_height=\"120dp\"\r\n            android:layout_alignParentTop=\"true\"\r\n            android:layout_centerHorizontal=\"true\"\r\n            android:layout_marginBottom=\"16dp\"\r\n            android:onClick=\"buttonClick\"\r\n            android:background=\"@drawable/ic_play_red\" />\r\n\r\n        <LinearLayout\r\n            android:layout_width=\"wrap_content\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:layout_below=\"@+id/start_btn\"\r\n            android:layout_centerInParent=\"true\"\r\n            android:orientation=\"horizontal\">\r\n\r\n\r\n            <Button\r\n                android:id=\"@+id/achievements_btn\"\r\n                android:layout_width=\"80dp\"\r\n                android:layout_height=\"80dp\"\r\n                android:layout_margin=\"24dp\"\r\n                android:onClick=\"buttonClick\"\r\n                android:background=\"@drawable/ic_achievement\" />\r\n\r\n            <Button\r\n                android:id=\"@+id/exit_btn\"\r\n                android:layout_width=\"80dp\"\r\n                android:layout_height=\"80dp\"\r\n                android:layout_margin=\"24dp\"\r\n                android:onClick=\"buttonClick\"\r\n                android:background=\"@drawable/ic_exit\" />\r\n        </LinearLayout>\r\n\r\n    </RelativeLayout>\r\n\r\n</RelativeLayout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/activity_main.xml	(revision 4df75b45e1ad62915bf08e834136029afce2fb7d)
++++ app/src/main/res/layout/activity_main.xml	(date 1608027409383)
+@@ -14,6 +14,7 @@
+         android:layout_width="match_parent"
+         android:layout_height="250dp"
+         android:layout_marginTop="100dp"
++        android:visibility="invisible"
+         android:layout_marginStart="8dp"
+         android:layout_marginEnd="8dp"
+         android:layout_marginBottom="0dp"
+Index: app/src/main/java/com/android/gramatematyczna/customdialogs/DialogShowCode.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/android/gramatematyczna/customdialogs/DialogShowCode.java	(date 1610049154922)
++++ app/src/main/java/com/android/gramatematyczna/customdialogs/DialogShowCode.java	(date 1610049154922)
+@@ -0,0 +1,67 @@
++package com.android.gramatematyczna.customdialogs;
++
++import android.app.Activity;
++import android.app.Dialog;
++import android.content.Intent;
++import android.os.Bundle;
++import android.view.KeyboardShortcutGroup;
++import android.view.Menu;
++import android.view.View;
++import android.view.Window;
++import android.widget.Button;
++import android.widget.TextView;
++
++import androidx.annotation.Nullable;
++
++import com.android.gramatematyczna.R;
++import com.android.gramatematyczna.activities.GamesListActivity;
++import com.android.gramatematyczna.activities.MainActivity;
++
++import java.util.List;
++
++public class DialogShowCode extends Dialog implements View.OnClickListener {
++    public Activity activity;
++    Button backBtn;
++    String code = "";
++
++    public DialogShowCode(Activity activity, String code) {
++        super(activity);
++        this.activity = activity;
++        this.code = code;
++    }
++
++    @Override
++    protected void onCreate(Bundle savedInstanceState) {
++        super.onCreate(savedInstanceState);
++        requestWindowFeature(Window.FEATURE_NO_TITLE);
++        setContentView(R.layout.dialog_show_code);
++
++        TextView code = (TextView)findViewById(R.id.drawing_code);
++        code.setText(this.code);
++
++        backBtn = (Button) findViewById(R.id.close_btn);
++        backBtn.setOnClickListener(this);
++    }
++
++    @Override
++    public void onClick(View view) {
++        switch (view.getId()) {
++            case R.id.close_btn:
++                this.dismiss();
++                break;
++            default:
++                break;
++        }
++        dismiss();
++    }
++
++    @Override
++    public void onProvideKeyboardShortcuts(List<KeyboardShortcutGroup> data, @Nullable Menu menu, int deviceId) {
++
++    }
++
++    @Override
++    public void onPointerCaptureChanged(boolean hasCapture) {
++
++    }
++}
+Index: app/src/main/java/com/android/gramatematyczna/database/DatabaseHelper.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/android/gramatematyczna/database/DatabaseHelper.java	(date 1610301144538)
++++ app/src/main/java/com/android/gramatematyczna/database/DatabaseHelper.java	(date 1610301144538)
+@@ -0,0 +1,164 @@
++package com.android.gramatematyczna.database;
++
++import android.content.ContentValues;
++import android.database.Cursor;
++import android.database.sqlite.SQLiteDatabase;
++import android.database.sqlite.SQLiteOpenHelper;
++import android.content.Context;
++import android.util.Log;
++
++import androidx.annotation.Nullable;
++
++import com.android.gramatematyczna.classes.Drawing;
++import com.android.gramatematyczna.games.GameListItem;
++
++import java.util.ArrayList;
++
++
++public class DatabaseHelper extends SQLiteOpenHelper {
++    private static final String DATABASE_NAME = "game.db";
++    private static final int DATABASE_VERSION = 1;
++    ConstVals consts = new ConstVals();
++
++    public DatabaseHelper(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
++        super(context, DATABASE_NAME, factory, DATABASE_VERSION);
++    }
++
++    public DatabaseHelper(Context context) {
++        super(context, DATABASE_NAME, null, DATABASE_VERSION);
++    }
++
++    @Override
++    public void onCreate(SQLiteDatabase db) {
++//        db.execSQL("DROP TABLE IF EXISTS " + consts.TABLE_DRAWINGS_NAME);
++//        db.execSQL("DROP TABLE IF EXISTS " + consts.TABLE_GAMES_NAME);
++
++//        db.execSQL(consts.SQL_CREATE_TABLE_DRAWINGS);
++//        db.execSQL(consts.SQL_CREATE_TABLE_GAMES);
++    }
++
++    @Override
++    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
++
++    }
++
++
++    public void add() {
++        ContentValues values = new ContentValues();
++
++        values.put(consts.COLUMN_LEVEL, 3);
++
++        SQLiteDatabase db = this.getWritableDatabase();
++        db.insert(consts.TABLE_GAMES_NAME, null, values);
++        db.close();
++    }
++//
++//    public void addMeasure(Measures obj) {
++//        Log.e("MyDBHandler", "addMeasures ");
++//        ContentValues values = new ContentValues();
++//
++//        values.put(consts.MEASURE_COLUMN_DATE, obj.getDate());
++//        values.put(consts.MEASURE_COLUMN_WAIST, obj.getWaist());
++//        values.put(consts.MEASURE_COLUMN_BELLY, obj.getBelly());
++//        values.put(consts.MEASURE_COLUMN_HIPS, obj.getHips());
++//        values.put(consts.MEASURE_COLUMN_THIGH_R, obj.getThighR());
++//        values.put(consts.MEASURE_COLUMN_THIGH_L, obj.getThighL());
++//
++//        SQLiteDatabase db = this.getWritableDatabase();
++//        db.insert(consts.TABLE_DRAWINGS_NAME, null, values);
++//        db.close();
++//    }
++
++
++    //******************************************************************************************
++    //                              G  E  T
++    //******************************************************************************************
++
++    public ArrayList<GameListItem> getGames() {
++        ArrayList<GameListItem> games = new ArrayList<>();
++
++        String selectQuery = "SELECT  * FROM " + consts.TABLE_GAMES_NAME;
++        SQLiteDatabase db = this.getReadableDatabase();
++        Cursor c = db.rawQuery(selectQuery, null);
++        // looping through all records and adding to the list
++        if (c.moveToFirst()) {
++            do {
++                int id = c.getInt(c.getColumnIndex(consts.COLUMN_ID));
++                int number = c.getInt(c.getColumnIndex(consts.COLUMN_LEVEL));
++                int type = c.getInt(c.getColumnIndex(consts.COLUMN_GAME_TYPE));
++                int unLocked = c.getInt(c.getColumnIndex(consts.COLUMN_UNLOCKED));
++                byte[] img = c.getBlob(c.getColumnIndex(consts.COLUMN_BLOB));
++
++                boolean unlocked = false;
++                if (unLocked == 1) unlocked = true;
++                GameListItem r = new GameListItem(id, number, type, unlocked);
++                r.setImg(img);
++
++                //todo
++//                r.addExcercises(getExcercisesList(name));
++                games.add(r);
++            } while (c.moveToNext());
++        }
++        db.close();
++        return games;
++    }
++
++    public ArrayList<Drawing> getDrawings() {
++        ArrayList<Drawing> drawings = new ArrayList<>();
++//        String selectQuery = "SELECT  * FROM " + consts.TABLE_DRAWINGS_NAME;
++        String selectQuery = "SELECT  * FROM Drawings";
++        SQLiteDatabase db = this.getReadableDatabase();
++        Cursor c = db.rawQuery(selectQuery, null);
++        // looping through all records and adding to the list
++//        Log.i("DatabaseHelper.getDrawings", "rows " + c.getCount());
++        if (c.moveToFirst()) {
++            do {
++//                Log.i("DatabaseHelper.getDrawings", "rows " + c.toString());
++                int id = c.getInt(c.getColumnIndex(consts.COLUMN_ID));
++                int unLocked = c.getInt(c.getColumnIndex(consts.COLUMN_UNLOCKED));
++                String code = c.getString(c.getColumnIndex(consts.COLUMN_CODE));
++                byte[] img = c.getBlob(c.getColumnIndex(consts.COLUMN_BLOB));
++
++                boolean unlocked = false;
++                if (unLocked == 1) unlocked = true;
++                Drawing r = new Drawing(id, code, unlocked);
++                r.setImg(img);
++                drawings.add(r);
++
++            } while (c.moveToNext());
++            // i czyscimy liste
++        }
++        db.close();
++        return drawings;
++    }
++
++    public void updateDrawing(int id) {
++        String update = "UPDATE " + consts.TABLE_DRAWINGS_NAME +
++                " SET " + consts.COLUMN_UNLOCKED + " = 1 " +
++                "WHERE " + consts.COLUMN_ID + " = " + id + ";";
++
++        SQLiteDatabase db = this.getReadableDatabase();
++        db.execSQL(update);
++        db.close();
++    }
++
++    public void updateGame(int id) {
++        String update = "UPDATE " + consts.TABLE_GAMES_NAME +
++                " SET " + consts.COLUMN_UNLOCKED + " = 1 " +
++                "WHERE " + consts.COLUMN_ID + " = " + id + ";";
++
++        SQLiteDatabase db = this.getReadableDatabase();
++        db.execSQL(update);
++        db.close();
++    }
++
++
++    public void clearData() {
++        String update = "UPDATE Drawings SET unlocked = 0";
++
++        SQLiteDatabase db = this.getReadableDatabase();
++        db.execSQL(update);
++        db.close();
++    }
++
++}
+Index: app/src/main/java/com/android/gramatematyczna/database/ConstVals.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/android/gramatematyczna/database/ConstVals.java	(date 1610043810509)
++++ app/src/main/java/com/android/gramatematyczna/database/ConstVals.java	(date 1610043810509)
+@@ -0,0 +1,38 @@
++package com.android.gramatematyczna.database;
++
++public class ConstVals {
++//    LocalDate date = LocalDate.now();
++//    String dateS = date.format(DateTimeFormatter.ofPattern(ConstVals.DATE_FORMAT));
++
++    //todo measures
++    static final String TABLE_DRAWINGS_NAME = "Drawings";
++    static final String TABLE_GAMES_NAME = "Games";
++
++    static final String COLUMN_UNLOCKED = "unlocked";
++    static final String COLUMN_BLOB = "image";
++    static final String COLUMN_ID = "id";
++    static final String COLUMN_LEVEL = "level";
++    static final String COLUMN_GAME_TYPE = "type";
++    static final String COLUMN_CODE = "code";
++
++
++    //    *************    MEASURES  *******************
++    public static final String SQL_CREATE_TABLE_GAMES =        //add, get
++            "CREATE TABLE " + TABLE_GAMES_NAME + " ( "
++                    + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
++                    + COLUMN_UNLOCKED + " INTEGER,"
++                    + COLUMN_LEVEL + " INTEGER,"
++                    + COLUMN_GAME_TYPE + " INTEGER,"
++                    + COLUMN_BLOB + " BLOB"
++                    + "); ";
++
++    //    *************    WEIGHT  *******************
++    public static final String SQL_CREATE_TABLE_DRAWINGS =        //add, get
++            "CREATE TABLE " + TABLE_DRAWINGS_NAME + " ( "
++                    + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
++                    + COLUMN_UNLOCKED + " INTEGER,"
++                    + COLUMN_CODE + " TEXT,"
++                    + COLUMN_BLOB + " BLOB"
++                    + "); ";
++
++}
+Index: app/src/main/java/com/android/gramatematyczna/games/GameListItem.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.android.gramatematyczna.games;\r\n\r\n/**\r\n * Created by B.A.Wędrychowicz on 14.12.2020\r\n */\r\npublic class GameListItem {\r\n    int color;\r\n    int number;\r\n    int gamePictureName;\r\n    int gameType;\r\n    //0-count elements, 1-memory game\r\n\r\n    public GameListItem(int color, int number, int gamePictureName) {\r\n        this.color = color;\r\n        this.number = number;\r\n        this.gamePictureName = gamePictureName;\r\n    }\r\n    public GameListItem() {\r\n    }\r\n\r\n    public GameListItem(int color, int number, int gamePictureName, int gameType) {\r\n        this.color = color;\r\n        this.number = number;\r\n        this.gamePictureName = gamePictureName;\r\n        this.gameType = gameType;\r\n    }\r\n\r\n    public int getColor() {\r\n        return color;\r\n    }\r\n    public void setColor(int color) {\r\n        this.color = color;\r\n    }\r\n    public int getNumber() {\r\n        return number;\r\n    }\r\n    public void setNumber(int number) {\r\n        this.number = number;\r\n    }\r\n    public int getGamePictureName() {\r\n        return gamePictureName;\r\n    }\r\n    public void setGamePictureName(int gamePictureName) {\r\n        this.gamePictureName = gamePictureName;\r\n    }\r\n    public int getGameType() {\r\n        return gameType;\r\n    }\r\n    public void setGameType(int gameType) {\r\n        this.gameType = gameType;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/android/gramatematyczna/games/GameListItem.java	(revision 4df75b45e1ad62915bf08e834136029afce2fb7d)
++++ app/src/main/java/com/android/gramatematyczna/games/GameListItem.java	(date 1610045148500)
+@@ -1,13 +1,18 @@
+ package com.android.gramatematyczna.games;
+ 
++import java.util.Arrays;
++
+ /**
+  * Created by B.A.Wędrychowicz on 14.12.2020
+  */
+ public class GameListItem {
++    int id;
+     int color;
+     int number;
+     int gamePictureName;
+     int gameType;
++    boolean unlocked = false;
++    byte[] img;
+     //0-count elements, 1-memory game
+ 
+     public GameListItem(int color, int number, int gamePictureName) {
+@@ -15,6 +20,7 @@
+         this.number = number;
+         this.gamePictureName = gamePictureName;
+     }
++
+     public GameListItem() {
+     }
+ 
+@@ -23,6 +29,15 @@
+         this.number = number;
+         this.gamePictureName = gamePictureName;
+         this.gameType = gameType;
++        this.unlocked = unlocked;
++    }
++
++    public GameListItem(int id,int number, int gameType,boolean unlocked) {
++        this.id = id;
++        this.number = number;
++        this.gamePictureName = gamePictureName;
++        this.gameType = gameType;
++        this.unlocked = unlocked;
+     }
+ 
+     public int getColor() {
+@@ -49,4 +64,31 @@
+     public void setGameType(int gameType) {
+         this.gameType = gameType;
+     }
++
++    public boolean isUnlocked() {
++        return unlocked;
++    }
++
++    public void setUnlocked(boolean unlocked) {
++        this.unlocked = unlocked;
++    }
++
++    public byte[] getImg() {
++        return img;
++    }
++
++    public void setImg(byte[] img) {
++        this.img = img;
++    }
++
++    @Override
++    public String toString() {
++        return "GameListItem{" +
++                "id=" + id +
++                ", number=" + number +
++                ", gamePictureName=" + gamePictureName +
++                ", gameType=" + gameType +
++                ", unlocked=" + unlocked +
++                '}';
++    }
+ }
+Index: app/src/main/java/com/android/gramatematyczna/games/GameCountActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.android.gramatematyczna.games;\r\n\r\nimport android.content.Context;\r\nimport android.content.Intent;\r\nimport android.graphics.drawable.ColorDrawable;\r\nimport android.os.Bundle;\r\nimport android.view.LayoutInflater;\r\nimport android.view.View;\r\nimport android.view.ViewGroup;\r\nimport android.view.Window;\r\nimport android.view.WindowManager;\r\nimport android.widget.AdapterView;\r\nimport android.widget.Button;\r\nimport android.widget.GridView;\r\nimport android.widget.ImageView;\r\nimport android.widget.LinearLayout;\r\nimport android.widget.TextView;\r\n\r\nimport androidx.appcompat.app.AlertDialog;\r\nimport androidx.appcompat.app.AppCompatActivity;\r\n\r\nimport com.android.gramatematyczna.PreferencesManagement;\r\nimport com.android.gramatematyczna.R;\r\nimport com.android.gramatematyczna.customdialogs.EndGameDialogClass;\r\nimport com.android.gramatematyczna.customdialogs.PauseDialogClass;\r\n\r\nimport java.util.ArrayList;\r\nimport java.util.Random;\r\n\r\npublic class GameCountActivity extends AppCompatActivity {\r\n    int newNumber;\r\n    int level = 0;\r\n    int points = 0;\r\n    Context ctx;\r\n    ArrayList<Integer> game = new ArrayList<>();\r\n    ArrayList<Integer> buttons = new ArrayList<>();\r\n    LinearLayout answersLayout;\r\n    Game g;\r\n    PreferencesManagement preferencesManagement;\r\n    public Integer[] elementsImages;\r\n    public Integer[] buttonsImages;\r\n    public Integer[] answers = {0, 0, 0, 0, 0}; // bedziemy zapisywac 0-1 czy poprawnie odpowiedzieli, czy nie\r\n\r\n    public String[] imageNames = {\r\n            \"img_cat\",\r\n            \"img_dog\",\r\n            \"img_star\"\r\n    };\r\n\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        requestWindowFeature(Window.FEATURE_NO_TITLE);\r\n        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,\r\n                WindowManager.LayoutParams.FLAG_FULLSCREEN\r\n        );\r\n        setContentView(R.layout.activity_game_count);\r\n        preferencesManagement = new PreferencesManagement(GameCountActivity.this);\r\n        preferencesManagement.manage();\r\n\r\n        Intent intent = getIntent();\r\n        Bundle extras = intent.getExtras();\r\n        newNumber = extras.getInt(\"NEW_NUMBER\", 3);\r\n        g = new Game(newNumber);\r\n        game = g.game;\r\n        ctx = getApplicationContext();\r\n        createLevel(level);\r\n        generateButtons();\r\n\r\n        answersLayout = findViewById(R.id.answers_layout);\r\n    }\r\n\r\n\r\n    public void createLevel(int level) {\r\n        generateElementList(game.get(level));\r\n        //nie ma sensu za kazdym razem tworzyc nowy grid z przyciskami\r\n//        generateButtons();\r\n    }\r\n\r\n\r\n    private void generateElementList(int numberOfElements) {\r\n        Random r = new Random();\r\n        String imgName = imageNames[r.nextInt(imageNames.length)];\r\n        int imgID = getDrawableByName(imgName);\r\n//        Toast.makeText(this, \"\"+imgName+\"  -  \"+imgID, Toast.LENGTH_SHORT).show();\r\n        elementsImages = new Integer[numberOfElements];\r\n        for (int i = 0; i < numberOfElements; i++) {\r\n            elementsImages[i] = imgID;\r\n        }\r\n        GridView gridview = (GridView) findViewById(R.id.GridViewImages);\r\n        gridview.setAdapter(new GridViewImageAdapter(this, elementsImages));\r\n\r\n        int columnNum = 1;\r\n        if (numberOfElements > 1 && numberOfElements < 5) columnNum = 2;\r\n        else if (numberOfElements >= 5) columnNum = 3;\r\n        gridview.setNumColumns(columnNum);\r\n    }\r\n\r\n\r\n    private void generateButtons() {\r\n        buttons.clear();\r\n        buttons = g.generateButtons(level);\r\n\r\n        buttonsImages = new Integer[buttons.size()];\r\n        String buttonName = \"\";\r\n        for (int i = 0; i < buttons.size(); i++) {\r\n            buttonName = \"button_\" + buttons.get(i);\r\n            buttonsImages[i] = getDrawableByName(buttonName);\r\n        }\r\n        GridView gridview = (GridView) findViewById(R.id.GridViewButtons);\r\n        if (newNumber < 6) gridview.setNumColumns(newNumber);\r\n        else gridview.setNumColumns((int) Math.round(newNumber / 2));\r\n\r\n        gridview.setAdapter(new GridViewButtonAdapter(this, buttonsImages));\r\n        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {\r\n            public void onItemClick(AdapterView<?> parent,\r\n                                    View v, int position, long id) {\r\n                // Send intent to SingleViewActivity\r\n//                Toast.makeText(GameCountActivity.this, \"clicked!\"+buttons.get(position), Toast.LENGTH_SHORT).show();\r\n                checkAnswer(buttons.get(position));\r\n            }\r\n        });\r\n\r\n    }\r\n\r\n    private int getDrawableByName(String name) {\r\n        int resID = getResources().getIdentifier(name, \"drawable\", getPackageName());\r\n        return resID;\r\n    }\r\n\r\n    private void checkAnswer(int answer) {\r\n        if (answer == game.get(level)) {\r\n            points++;\r\n//            Toast.makeText(this, \"correct answer!\", Toast.LENGTH_SHORT).show();\r\n            answers[level] = 1; //odpowiedzial poprawnie wiec zapisujemy\r\n            updateAnswersGridColor();\r\n            showCorrectDialog();\r\n        } else {\r\n//            Toast.makeText(this, \"wrong answer!\", Toast.LENGTH_SHORT).show();\r\n            updateAnswersGridColor();\r\n            showWrongDialog();\r\n        }\r\n    }\r\n\r\n    private void nextlevel() {\r\n        level++;\r\n        if (level < 5) createLevel(level);\r\n    }\r\n\r\n    //todo\r\n    public void updateAnswersGridColor() {\r\n        //tutaj bierzemy grid i dla konkretnego lvl ustawiamy\r\n        if (answers[level] == 0) {\r\n            //niepoprawnie odpowiedzieli - zmianiamy na czerwony\r\n            int color = getResources().getColor(R.color.red);\r\n            answersLayout.getChildAt(level).setBackgroundColor(color);\r\n        } else {\r\n            //poprawnie odpowiedzieli - zmianiamy na zielony\r\n            int color = getResources().getColor(R.color.green_bright);\r\n            answersLayout.getChildAt(level).setBackgroundColor(color);\r\n        }\r\n    }\r\n\r\n    private void showCorrectDialog() {\r\n        ViewGroup viewGroup = findViewById(android.R.id.content);\r\n        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_correct_answer, viewGroup, false);\r\n        AlertDialog.Builder builder = new AlertDialog.Builder(this);\r\n        builder.setView(dialogView);\r\n        final AlertDialog alertDialog = builder.create();\r\n        ImageView btn = dialogView.findViewById(R.id.button_corect);\r\n        btn.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View view) {\r\n                if (level == 4) {\r\n                    alertDialog.cancel();\r\n                    showSummaryDialog();\r\n                }\r\n                else\r\n                    nextlevel();\r\n                alertDialog.cancel();\r\n\r\n            }\r\n        });\r\n        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));\r\n        alertDialog.getWindow().setLayout(100, 100);\r\n        alertDialog.show();\r\n    }\r\n\r\n    private void showWrongDialog() {\r\n        ViewGroup viewGroup = findViewById(android.R.id.content);\r\n        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_wrong_answer, viewGroup, false);\r\n        AlertDialog.Builder builder = new AlertDialog.Builder(this);\r\n        builder.setView(dialogView);\r\n        final AlertDialog alertDialog = builder.create();\r\n        Button btn = dialogView.findViewById(R.id.button_next);\r\n        btn.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View view) {\r\n                if (level == 4){\r\n                    alertDialog.cancel();\r\n                    showSummaryDialog();\r\n                }\r\n                else\r\n                    nextlevel();\r\n                alertDialog.cancel();\r\n            }\r\n        });\r\n        Button btn2 = dialogView.findViewById(R.id.button_again);\r\n        btn2.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View view) {\r\n                alertDialog.cancel();\r\n            }\r\n        });\r\n\r\n        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));\r\n        alertDialog.show();\r\n    }\r\n\r\n//    private void showSummaryDialog() {\r\n//        ViewGroup viewGroup = findViewById(android.R.id.content);\r\n//        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_summary, viewGroup, false);\r\n//        AlertDialog.Builder builder = new AlertDialog.Builder(this);\r\n//        builder.setView(dialogView);\r\n//        final AlertDialog alertDialog = builder.create();\r\n//        Button btn = dialogView.findViewById(R.id.button_next);\r\n//        btn.setOnClickListener(new View.OnClickListener() {\r\n//            @Override\r\n//            public void onClick(View view) {\r\n//                finish();\r\n//                alertDialog.cancel();\r\n//            }\r\n//        });\r\n//        Button btn2 = dialogView.findViewById(R.id.button_again);\r\n//        btn2.setOnClickListener(new View.OnClickListener() {\r\n//            @Override\r\n//            public void onClick(View view) {\r\n////                level=0;\r\n////                points=0;\r\n//                finish();\r\n//                Intent intent = new Intent(ctx, GameCountActivity.class);\r\n//                intent.putExtra(\"NEW_NUMBER\", newNumber);\r\n//                startActivity(intent);\r\n//                alertDialog.cancel();\r\n//            }\r\n//        });\r\n//        TextView summaryPoints = dialogView.findViewById(R.id.summary_points);\r\n//        summaryPoints.setText(points + \"/5\");\r\n//\r\n//        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));\r\n//        alertDialog.show();\r\n//    }\r\n\r\n    private void showSummaryDialog() {\r\n        int correctAnswers = points;\r\n        int coins = 0;\r\n        if (correctAnswers > 0 && correctAnswers < 3) coins = 1;\r\n        else if (correctAnswers > 2 && correctAnswers < 5) coins = 2;\r\n        else if (correctAnswers == 5) coins = 3;\r\n        preferencesManagement.addCoins(coins);\r\n\r\n        EndGameDialogClass dialog = new EndGameDialogClass(GameCountActivity.this, correctAnswers) {\r\n            @Override\r\n            public void playAgain() {\r\n                super.playAgain();\r\n                activity.finish();\r\n                Intent intent = new Intent(activity, GameCountActivity.class);\r\n                intent.putExtra(\"NEW_NUMBER\", newNumber);\r\n                activity.startActivity(intent);\r\n            }\r\n        };\r\n        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));\r\n        dialog.show();\r\n    }\r\n\r\n\r\n    public void pauseGame(View view) {\r\n        //todo zrobic\r\n        PauseDialogClass dialog = new PauseDialogClass(GameCountActivity.this);\r\n        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));\r\n        dialog.show();\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/android/gramatematyczna/games/GameCountActivity.java	(revision 4df75b45e1ad62915bf08e834136029afce2fb7d)
++++ app/src/main/java/com/android/gramatematyczna/games/GameCountActivity.java	(date 1610037058625)
+@@ -268,6 +268,7 @@
+                 Intent intent = new Intent(activity, GameCountActivity.class);
+                 intent.putExtra("NEW_NUMBER", newNumber);
+                 activity.startActivity(intent);
++                finish();
+             }
+         };
+         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+Index: app/src/main/java/com/android/gramatematyczna/adapters/GamesGridAdapter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.android.gramatematyczna.adapters;\r\n\r\nimport android.content.Context;\r\nimport android.content.Intent;\r\nimport android.view.LayoutInflater;\r\nimport android.view.View;\r\nimport android.view.ViewGroup;\r\nimport android.widget.BaseAdapter;\r\nimport android.widget.ImageView;\r\n\r\nimport androidx.cardview.widget.CardView;\r\nimport androidx.core.content.res.ResourcesCompat;\r\n\r\nimport com.android.gramatematyczna.R;\r\nimport com.android.gramatematyczna.activities.GameActivity;\r\nimport com.android.gramatematyczna.games.GameCountActivity;\r\nimport com.android.gramatematyczna.games.GameListItem;\r\nimport com.android.gramatematyczna.games.GameMemoryActivity;\r\n\r\npublic class GamesGridAdapter extends BaseAdapter {\r\n    Context context;\r\n    int colors[];\r\n    LayoutInflater inflter;\r\n    boolean isTMP=false;\r\n\r\n    public GamesGridAdapter(Context applicationContext, int[] colors) {\r\n        this.context = applicationContext;\r\n        this.colors = colors;\r\n        inflter = (LayoutInflater.from(applicationContext));\r\n    }\r\n\r\n    GameListItem gamesListTMP[];\r\n    public GamesGridAdapter(Context applicationContext, GameListItem[] gamesListTMP) {\r\n        this.context = applicationContext;\r\n        this.gamesListTMP = gamesListTMP;\r\n        inflter = (LayoutInflater.from(applicationContext));\r\n        isTMP=true;\r\n    }\r\n\r\n    @Override\r\n    public int getCount() {\r\n         if(isTMP)\r\n             return gamesListTMP.length;\r\n         else return  colors.length;\r\n    }\r\n    @Override\r\n    public Object getItem(int i) {\r\n        return null;\r\n    }\r\n    @Override\r\n    public long getItemId(int i) {\r\n        return 0;\r\n    }\r\n\r\n    @Override\r\n    public View getView(final int i, View view, ViewGroup viewGroup) {\r\n        view = inflter.inflate(R.layout.item_grid_drawings, null); // inflate the layout\r\n        CardView card = (CardView) view.findViewById(R.id.cardview); // get the reference of ImageView\r\n        int color;\r\n        if(isTMP){\r\n            color = ResourcesCompat.getColor(context.getResources(), gamesListTMP[i].getColor(), null);\r\n        }else{\r\n            color = ResourcesCompat.getColor(context.getResources(), colors[i], null);\r\n        }\r\n\r\n        ImageView background = (ImageView)view.findViewById(R.id.card_background);\r\n        ImageView lock = (ImageView)view.findViewById(R.id.item_lock);\r\n        ImageView download = (ImageView)view.findViewById(R.id.item_unlock);\r\n        ImageView gameIcon = view.findViewById(R.id.game_icon);\r\n        background.setBackgroundColor(color); // set logo images\r\n//        card.setCardBackgroundColor(drawing); // set logo images\r\n        if(gamesListTMP[i].getGameType()==0) {\r\n            String gameIconName=\"img_number_\"+gamesListTMP[i].getNumber();\r\n            gameIcon.setImageResource(getDrawableByName(gameIconName));\r\n        }else if(gamesListTMP[i].getGameType()==1) {\r\n            String gameIconName=\"img_memory\"+gamesListTMP[i].getNumber();\r\n            gameIcon.setImageResource(getDrawableByName(gameIconName));\r\n        }\r\n        if(i==0 || i==1) {\r\n            lock.setVisibility(View.INVISIBLE);\r\n            if(isTMP) {\r\n                view.setOnClickListener(new View.OnClickListener() {\r\n                    @Override\r\n                    public void onClick(View view) {\r\n                        if(gamesListTMP[i].getGameType()==0) {\r\n                            Intent intent = new Intent(context, GameCountActivity.class);\r\n                            intent.putExtra(\"NEW_NUMBER\", gamesListTMP[i].getNumber());\r\n                            context.startActivity(intent);\r\n                        }else if(gamesListTMP[i].getGameType()==1){\r\n                            Intent intent = new Intent(context, GameMemoryActivity.class);\r\n                            intent.putExtra(\"NEW_NUMBER\", gamesListTMP[i].getNumber());\r\n                            context.startActivity(intent);\r\n                        }\r\n                    }\r\n                });\r\n            }else{\r\n                view.setOnClickListener(new View.OnClickListener() {\r\n                    @Override\r\n                    public void onClick(View view) {\r\n                        Intent intent = new Intent(context, GameCountActivity.class);\r\n                        intent.putExtra(\"NEW_NUMBER\", 7);\r\n                        context.startActivity(intent);\r\n                    }\r\n                });\r\n            }\r\n        }\r\n        return view;\r\n    }\r\n\r\n    private int getDrawableByName(String name){\r\n        int resID = context.getResources().getIdentifier(name , \"drawable\", context.getPackageName());\r\n        return resID;\r\n    }\r\n\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/android/gramatematyczna/adapters/GamesGridAdapter.java	(revision 4df75b45e1ad62915bf08e834136029afce2fb7d)
++++ app/src/main/java/com/android/gramatematyczna/adapters/GamesGridAdapter.java	(date 1610391819285)
+@@ -1,21 +1,37 @@
+ package com.android.gramatematyczna.adapters;
+ 
++import android.app.Activity;
+ import android.content.Context;
+ import android.content.Intent;
++import android.content.SharedPreferences;
++import android.graphics.drawable.ColorDrawable;
++import android.preference.PreferenceManager;
+ import android.view.LayoutInflater;
+ import android.view.View;
+ import android.view.ViewGroup;
+ import android.widget.BaseAdapter;
++import android.widget.Button;
+ import android.widget.ImageView;
++import android.widget.TextView;
++import android.widget.Toast;
+ 
++import androidx.appcompat.app.AlertDialog;
+ import androidx.cardview.widget.CardView;
+ import androidx.core.content.res.ResourcesCompat;
+ 
++import com.android.gramatematyczna.PreferencesManagement;
+ import com.android.gramatematyczna.R;
+ import com.android.gramatematyczna.activities.GameActivity;
++import com.android.gramatematyczna.activities.GamesListActivity;
+ import com.android.gramatematyczna.games.GameCountActivity;
+ import com.android.gramatematyczna.games.GameListItem;
+ import com.android.gramatematyczna.games.GameMemoryActivity;
++import com.google.gson.Gson;
++import com.google.gson.reflect.TypeToken;
++
++import java.lang.reflect.Array;
++import java.util.Arrays;
++import java.util.List;
+ 
+ public class GamesGridAdapter extends BaseAdapter {
+     Context context;
+@@ -23,6 +39,9 @@
+     LayoutInflater inflter;
+     boolean isTMP=false;
+ 
++    int coins = 0;
++    PreferencesManagement preferencesManagement;
++
+     public GamesGridAdapter(Context applicationContext, int[] colors) {
+         this.context = applicationContext;
+         this.colors = colors;
+@@ -35,6 +54,9 @@
+         this.gamesListTMP = gamesListTMP;
+         inflter = (LayoutInflater.from(applicationContext));
+         isTMP=true;
++        preferencesManagement = new PreferencesManagement(context);
++        preferencesManagement.manage();
++        coins = preferencesManagement.getCoins();
+     }
+ 
+     @Override
+@@ -65,7 +87,7 @@
+ 
+         ImageView background = (ImageView)view.findViewById(R.id.card_background);
+         ImageView lock = (ImageView)view.findViewById(R.id.item_lock);
+-        ImageView download = (ImageView)view.findViewById(R.id.item_unlock);
++        final ImageView download = (ImageView)view.findViewById(R.id.item_unlock);
+         ImageView gameIcon = view.findViewById(R.id.game_icon);
+         background.setBackgroundColor(color); // set logo images
+ //        card.setCardBackgroundColor(drawing); // set logo images
+@@ -76,7 +98,7 @@
+             String gameIconName="img_memory"+gamesListTMP[i].getNumber();
+             gameIcon.setImageResource(getDrawableByName(gameIconName));
+         }
+-        if(i==0 || i==1) {
++        if(!gamesListTMP[i].isLocked()) {
+             lock.setVisibility(View.INVISIBLE);
+             if(isTMP) {
+                 view.setOnClickListener(new View.OnClickListener() {
+@@ -104,6 +126,21 @@
+                 });
+             }
+         }
++            //TODO choose game to unlock
++            if(coins>7 && gamesListTMP[i].isLocked() && !gamesListTMP[i-1].isLocked()){
++                lock.setVisibility(View.INVISIBLE);
++                download.setVisibility(View.VISIBLE);
++                view.setOnClickListener(new View.OnClickListener() {
++                    @Override
++                    public void onClick(View view) {
++                        showConfirmDialog(i, download);
++//                        gamesListTMP[i].setLocked(false);
++//                        download.setVisibility(View.INVISIBLE);
++//                        saveGameList();
++//                        setupCoinsBar();
++                    }
++                });
++            }
+         return view;
+     }
+ 
+@@ -112,4 +149,63 @@
+         return resID;
+     }
+ 
++    public void saveGameList(){
++        SharedPreferences sharedPrefs = context.getSharedPreferences("Games", Activity.MODE_PRIVATE);
++        SharedPreferences.Editor editor = sharedPrefs.edit();
++        Gson gson = new Gson();
++        List <GameListItem> list = Arrays.asList(gamesListTMP);
++        String json = gson.toJson(list);
++
++        editor.putString("GameList", json);
++        editor.commit();
++    }
++    public GameListItem[] getGameList(){
++        SharedPreferences sharedPrefs = context.getSharedPreferences("Games", Activity.MODE_PRIVATE);
++        Gson gson = new Gson();
++        String json = sharedPrefs.getString("GameList", "");
++        List<GameListItem> arrayList = gson.fromJson(json, new TypeToken<List<GameListItem>>() {}.getType());
++        GameListItem gamesListTMP2[]=arrayList.toArray(new GameListItem[0]);
++        return gamesListTMP2;
++    }
++
++    public void setupCoinsBar(){
++    preferencesManagement.clearCoins();
++    int[] coinsIV = {R.id.bar_coin1,R.id.bar_coin2,R.id.bar_coin3,R.id.bar_coin4,R.id.bar_coin5,R.id.bar_coin6,R.id.bar_coin7,R.id.bar_coin8};
++        for(int i=0; i<coins;i++){
++            ((ImageView)((Activity)context).findViewById(coinsIV[i])).setBackground(context.getResources().getDrawable(R.drawable.coin_2));
++            if(i==7)i=coins;
++        }
++    }
++
++    private void showConfirmDialog(final int i, final ImageView download) {
++        ViewGroup viewGroup = ((Activity)context).findViewById(android.R.id.content);
++        View dialogView = LayoutInflater.from((Activity)context).inflate(R.layout.dialog_confirm_unlock, viewGroup, false);
++        TextView question = dialogView.findViewById(R.id.confirm_unlock);
++        question.setText(R.string.question_unlock_game);
++        AlertDialog.Builder builder = new AlertDialog.Builder((Activity)context);
++        builder.setView(dialogView);
++        final AlertDialog alertDialog = builder.create();
++        Button btn = dialogView.findViewById(R.id.button_no);
++        btn.setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View view) {
++                alertDialog.cancel();
++            }
++        });
++        Button btn2 = dialogView.findViewById(R.id.button_yes);
++        btn2.setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View view) {
++                gamesListTMP[i].setLocked(false);
++                download.setVisibility(View.INVISIBLE);
++                saveGameList();
++                setupCoinsBar();
++                alertDialog.cancel();
++            }
++        });
++        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
++        alertDialog.getWindow().setLayout(100, 100);
++        alertDialog.show();
++    }
++
+ }
+\ No newline at end of file
+Index: app/src/main/java/com/android/gramatematyczna/activities/GamesListActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.android.gramatematyczna.activities;\r\n\r\nimport androidx.appcompat.app.AppCompatActivity;\r\n\r\nimport android.os.Bundle;\r\nimport android.view.View;\r\nimport android.view.Window;\r\nimport android.view.WindowManager;\r\nimport android.widget.GridView;\r\nimport android.widget.ImageView;\r\nimport android.widget.Toast;\r\n\r\nimport com.android.gramatematyczna.PreferencesManagement;\r\nimport com.android.gramatematyczna.R;\r\nimport com.android.gramatematyczna.adapters.GamesGridAdapter;\r\nimport com.android.gramatematyczna.games.GameListItem;\r\n\r\npublic class GamesListActivity extends AppCompatActivity {\r\n\r\n    int coins = 0;\r\n    PreferencesManagement preferencesManagement;\r\n    int gamesList[] = {R.color.yellow, R.color.blue_light, R.color.pink_light, R.color.green_bright, R.color.purple, R.color.blue_strong, R.color.red_fire, R.color.purple_pope, R.color.green_neon, R.color.pink_powder, R.color.color_numbers, R.color.orange, R.color.yellow_neon};\r\n    GameListItem gamesListTMP[] = {new GameListItem(R.color.yellow, 3, 0,0),\r\n            new GameListItem(R.color.green_neon, 4, 0,0),\r\n            new GameListItem(R.color.blue_light, 5, 0,0),\r\n            new GameListItem(R.color.blue_light, 5,  0,1),\r\n            new GameListItem(R.color.purple, 6, 0,0),\r\n            new GameListItem(R.color.purple, 6,  0,1),\r\n            new GameListItem(R.color.red_fire, 7, 0,0),\r\n            new GameListItem(R.color.red_fire, 7,  0,1),\r\n            new GameListItem(R.color.pink_powder, 8, 0,0),\r\n            new GameListItem(R.color.pink_powder, 8,  0,1),\r\n            new GameListItem(R.color.yellow, 9, 0,0),\r\n            new GameListItem(R.color.yellow, 9,  0,1),\r\n            new GameListItem(R.color.green_neon, 10, 0,0),\r\n            new GameListItem(R.color.green_neon, 10,  0,1), };\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        setFullScreenMode();\r\n        setContentView(R.layout.activity_games_list);\r\n\r\n        preferencesManagement = new PreferencesManagement(GamesListActivity.this);\r\n        preferencesManagement.manage();\r\n        coins = preferencesManagement.getCoins();\r\n\r\n//        GamesGridAdapter adapter = new GamesGridAdapter(GamesListActivity.this, gamesList);\r\n        GamesGridAdapter adapter = new GamesGridAdapter(GamesListActivity.this, gamesListTMP);\r\n        GridView gridView = (GridView)findViewById(R.id.gridView);\r\n        gridView.setAdapter(adapter);\r\n        setupCoinsBar();\r\n    }\r\n\r\n    public void setFullScreenMode(){\r\n        requestWindowFeature(Window.FEATURE_NO_TITLE);\r\n        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,\r\n                WindowManager.LayoutParams.FLAG_FULLSCREEN\r\n        );\r\n    }\r\n\r\n    public void onBackPressed(View view) {\r\n        super.onBackPressed();\r\n    }\r\n\r\n\r\n    int[] coinsIV = {R.id.bar_coin1,R.id.bar_coin2,R.id.bar_coin3,R.id.bar_coin4,R.id.bar_coin5,R.id.bar_coin6,R.id.bar_coin7,R.id.bar_coin8};\r\n    public void setupCoinsBar(){\r\n        for(int i=0; i<coins;i++){\r\n            ((ImageView)findViewById(coinsIV[i])).setBackground(getResources().getDrawable(R.drawable.coin));\r\n            if(i==7)i=coins;\r\n        }\r\n        if(coins==8){\r\n            Toast.makeText(this,\"Możesz odblokowac gre!\",Toast.LENGTH_SHORT).show();\r\n        }\r\n    }\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/android/gramatematyczna/activities/GamesListActivity.java	(revision 4df75b45e1ad62915bf08e834136029afce2fb7d)
++++ app/src/main/java/com/android/gramatematyczna/activities/GamesListActivity.java	(date 1610391808776)
+@@ -2,6 +2,8 @@
+ 
+ import androidx.appcompat.app.AppCompatActivity;
+ 
++import android.app.Activity;
++import android.content.SharedPreferences;
+ import android.os.Bundle;
+ import android.view.View;
+ import android.view.Window;
+@@ -14,26 +16,17 @@
+ import com.android.gramatematyczna.R;
+ import com.android.gramatematyczna.adapters.GamesGridAdapter;
+ import com.android.gramatematyczna.games.GameListItem;
++import com.google.gson.Gson;
++import com.google.gson.reflect.TypeToken;
++
++import java.util.List;
+ 
+ public class GamesListActivity extends AppCompatActivity {
+ 
+     int coins = 0;
+     PreferencesManagement preferencesManagement;
+     int gamesList[] = {R.color.yellow, R.color.blue_light, R.color.pink_light, R.color.green_bright, R.color.purple, R.color.blue_strong, R.color.red_fire, R.color.purple_pope, R.color.green_neon, R.color.pink_powder, R.color.color_numbers, R.color.orange, R.color.yellow_neon};
+-    GameListItem gamesListTMP[] = {new GameListItem(R.color.yellow, 3, 0,0),
+-            new GameListItem(R.color.green_neon, 4, 0,0),
+-            new GameListItem(R.color.blue_light, 5, 0,0),
+-            new GameListItem(R.color.blue_light, 5,  0,1),
+-            new GameListItem(R.color.purple, 6, 0,0),
+-            new GameListItem(R.color.purple, 6,  0,1),
+-            new GameListItem(R.color.red_fire, 7, 0,0),
+-            new GameListItem(R.color.red_fire, 7,  0,1),
+-            new GameListItem(R.color.pink_powder, 8, 0,0),
+-            new GameListItem(R.color.pink_powder, 8,  0,1),
+-            new GameListItem(R.color.yellow, 9, 0,0),
+-            new GameListItem(R.color.yellow, 9,  0,1),
+-            new GameListItem(R.color.green_neon, 10, 0,0),
+-            new GameListItem(R.color.green_neon, 10,  0,1), };
++    GameListItem gamesListTMP[];
+ 
+     @Override
+     protected void onCreate(Bundle savedInstanceState) {
+@@ -43,8 +36,32 @@
+ 
+         preferencesManagement = new PreferencesManagement(GamesListActivity.this);
+         preferencesManagement.manage();
++        //little cheat for test:
++//        preferencesManagement.addCoins(8);
+         coins = preferencesManagement.getCoins();
+ 
++        if(getFirstUse()){
++            GameListItem gamesListTMP2[] = {new GameListItem(R.color.yellow, 3, 0,0, false),
++                    new GameListItem(R.color.green_neon, 4, 0,0, false),
++                    new GameListItem(R.color.blue_light, 5, 0,0, false),
++                    new GameListItem(R.color.blue_light, 5,  0,1, true),
++                    new GameListItem(R.color.purple, 6, 0,0, true),
++                    new GameListItem(R.color.purple, 6,  0,1, true),
++                    new GameListItem(R.color.red_fire, 7, 0,0, true),
++                    new GameListItem(R.color.red_fire, 7,  0,1, true),
++                    new GameListItem(R.color.pink_powder, 8, 0,0, true),
++                    new GameListItem(R.color.pink_powder, 8,  0,1, true),
++                    new GameListItem(R.color.yellow, 9, 0,0, true),
++                    new GameListItem(R.color.yellow, 9,  0,1, true),
++                    new GameListItem(R.color.green_neon, 10, 0,0, true),
++                    new GameListItem(R.color.green_neon, 10,  0,1, true)};
++            gamesListTMP=gamesListTMP2;
++            setFirstUse();
++        }else{
++            gamesListTMP=getGameList();
++        }
++
++
+ //        GamesGridAdapter adapter = new GamesGridAdapter(GamesListActivity.this, gamesList);
+         GamesGridAdapter adapter = new GamesGridAdapter(GamesListActivity.this, gamesListTMP);
+         GridView gridView = (GridView)findViewById(R.id.gridView);
+@@ -75,4 +92,24 @@
+         }
+     }
+ 
++    public GameListItem[] getGameList(){
++        SharedPreferences sharedPrefs = getSharedPreferences("Games", Activity.MODE_PRIVATE);
++        Gson gson = new Gson();
++        String json = sharedPrefs.getString("GameList", "");
++        List<GameListItem> arrayList = gson.fromJson(json, new TypeToken<List<GameListItem>>() {}.getType());
++        GameListItem gamesListTMP2[]=arrayList.toArray(new GameListItem[0]);
++        return gamesListTMP2;
++    }
++    private void setFirstUse(){
++        SharedPreferences sharedPrefs = getSharedPreferences("Games", Activity.MODE_PRIVATE);
++        SharedPreferences.Editor editor = sharedPrefs.edit();
++        editor.putBoolean("FirstUse", false);
++        editor.commit();
++    }
++    private boolean getFirstUse(){
++        SharedPreferences sharedPrefs = getSharedPreferences("Games", Activity.MODE_PRIVATE);
++        return sharedPrefs.getBoolean("FirstUse", true);
++    }
++
++
+ }
+Index: app/src/main/java/com/android/gramatematyczna/customdialogs/EndGameDialogClass.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.android.gramatematyczna.customdialogs;\r\n\r\nimport android.annotation.SuppressLint;\r\nimport android.app.Activity;\r\nimport android.app.Dialog;\r\nimport android.content.Intent;\r\nimport android.content.res.Resources;\r\nimport android.os.Bundle;\r\nimport android.view.KeyboardShortcutGroup;\r\nimport android.view.Menu;\r\nimport android.view.View;\r\nimport android.view.Window;\r\nimport android.widget.Button;\r\nimport android.widget.ImageView;\r\n\r\nimport androidx.annotation.Nullable;\r\n\r\nimport com.android.gramatematyczna.R;\r\nimport com.android.gramatematyczna.activities.GamesListActivity;\r\nimport com.android.gramatematyczna.activities.MainActivity;\r\n\r\nimport java.util.List;\r\n\r\npublic class EndGameDialogClass extends Dialog implements View.OnClickListener {\r\n    public Activity activity;\r\n    Button homeBtn, resumeBtn, listBtn;\r\n    ImageView starsIV, coin1IV, coin2IV, coin3IV, heartIV;\r\n    int goodAnswers = 0;\r\n    int starsNumber = 0;\r\n\r\n\r\n    public EndGameDialogClass(Activity activity, int goodAnswers) {\r\n        super(activity);\r\n        this.activity = activity;\r\n        this.goodAnswers = goodAnswers;\r\n    }\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        requestWindowFeature(Window.FEATURE_NO_TITLE);\r\n        setContentView(R.layout.end_game_dialog);\r\n        listBtn = (Button) findViewById(R.id.list_btn);\r\n        listBtn.setOnClickListener(this);\r\n        resumeBtn = (Button) findViewById(R.id.resume_btn);\r\n        resumeBtn.setOnClickListener(this);\r\n\r\n        starsIV = (ImageView) findViewById(R.id.stars_imageview);\r\n        coin1IV = (ImageView) findViewById(R.id.coin_iv);\r\n        coin2IV = (ImageView) findViewById(R.id.coin2_iv);\r\n        coin3IV = (ImageView) findViewById(R.id.coin3_iv);\r\n        heartIV = (ImageView) findViewById(R.id.heart_iv);\r\n\r\n        setGraphics();\r\n    }\r\n\r\n    @SuppressLint(\"UseCompatLoadingForDrawables\")\r\n    public void setGraphics() {\r\n        Resources res = activity.getResources();\r\n        if (goodAnswers < 3) {\r\n            starsNumber = 1;\r\n            starsIV.setBackground(res.getDrawable(R.drawable.stars_1));\r\n            coin1IV.setBackground(res.getDrawable(R.drawable.coin));\r\n        } else if (goodAnswers < 5) {\r\n            starsNumber = 2;\r\n            starsIV.setBackground(res.getDrawable(R.drawable.stars_2));\r\n            coin1IV.setBackground(res.getDrawable(R.drawable.coin));\r\n            coin2IV.setBackground(res.getDrawable(R.drawable.coin));\r\n        } else if (goodAnswers == 5) {\r\n            starsNumber = 3;\r\n            starsIV.setBackground(res.getDrawable(R.drawable.stars_3));\r\n            coin1IV.setBackground(res.getDrawable(R.drawable.coin));\r\n            coin2IV.setBackground(res.getDrawable(R.drawable.coin));\r\n            coin3IV.setBackground(res.getDrawable(R.drawable.coin));\r\n            heartIV.setBackground(res.getDrawable(R.drawable.heart));\r\n        } else {\r\n            starsNumber = 0;\r\n            starsIV.setVisibility(View.GONE);\r\n        }\r\n    }\r\n\r\n\r\n    @Override\r\n    public void onClick(View view) {\r\n        switch (view.getId()) {\r\n            case R.id.list_btn:\r\n                goToListScreen();\r\n                break;\r\n            case R.id.resume_btn:\r\n                playAgain();\r\n                break;\r\n            default:\r\n                break;\r\n        }\r\n        dismiss();\r\n    }\r\n\r\n    public void playAgain() {\r\n\r\n    }\r\n\r\n    public void goToListScreen() {\r\n        Intent intent = new Intent(activity, GamesListActivity.class);\r\n        activity.startActivity(intent);\r\n    }\r\n\r\n    @Override\r\n    public void onProvideKeyboardShortcuts(List<KeyboardShortcutGroup> data, @Nullable Menu menu, int deviceId) {\r\n\r\n    }\r\n\r\n    @Override\r\n    public void onPointerCaptureChanged(boolean hasCapture) {\r\n\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/android/gramatematyczna/customdialogs/EndGameDialogClass.java	(revision 4df75b45e1ad62915bf08e834136029afce2fb7d)
++++ app/src/main/java/com/android/gramatematyczna/customdialogs/EndGameDialogClass.java	(date 1610049156882)
+@@ -17,7 +17,6 @@
+ 
+ import com.android.gramatematyczna.R;
+ import com.android.gramatematyczna.activities.GamesListActivity;
+-import com.android.gramatematyczna.activities.MainActivity;
+ 
+ import java.util.List;
+ 
+@@ -39,7 +38,7 @@
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+         requestWindowFeature(Window.FEATURE_NO_TITLE);
+-        setContentView(R.layout.end_game_dialog);
++        setContentView(R.layout.dialog_end_game);
+         listBtn = (Button) findViewById(R.id.list_btn);
+         listBtn.setOnClickListener(this);
+         resumeBtn = (Button) findViewById(R.id.resume_btn);
+Index: app/src/main/java/com/android/gramatematyczna/activities/MainActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.android.gramatematyczna.activities;\r\n\r\nimport androidx.appcompat.app.AppCompatActivity;\r\n\r\nimport android.content.Intent;\r\nimport android.os.Bundle;\r\nimport android.view.View;\r\nimport android.view.Window;\r\nimport android.view.WindowManager;\r\nimport android.view.animation.Animation;\r\nimport android.view.animation.AnimationUtils;\r\nimport android.widget.Button;\r\n\r\nimport com.android.gramatematyczna.BackgroundSoundService;\r\nimport com.android.gramatematyczna.PreferencesManagement;\r\nimport com.android.gramatematyczna.R;\r\n\r\npublic class MainActivity extends AppCompatActivity {\r\n\r\n    Button startBtn, achievementsBtn, exitBtn;\r\n    Button soundBtn, musicBtn;\r\n    Animation animShake;\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        requestWindowFeature(Window.FEATURE_NO_TITLE);\r\n        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,\r\n                WindowManager.LayoutParams.FLAG_FULLSCREEN\r\n        );\r\n        setContentView(R.layout.activity_main);\r\n\r\n        PreferencesManagement preferencesManagement = new PreferencesManagement(MainActivity.this);\r\n        preferencesManagement.manage();\r\n\r\n        animShake = AnimationUtils.loadAnimation(this, R.anim.shake);\r\n        System.out.println(\"MainActivity.onCreate()\");\r\n//        cleanData();\r\n    }\r\n\r\n    public void cleanData(){\r\n        PreferencesManagement preferencesManagement = new PreferencesManagement(MainActivity.this);\r\n        preferencesManagement.clearCoins();\r\n        preferencesManagement.clearHearts();\r\n    }\r\n\r\n    public void buttonClick(View view) {\r\n        switch(view.getId()) {\r\n            case R.id.start_btn:\r\n                goToGamesList(view);\r\n                return;\r\n            case R.id.achievements_btn:\r\n                showAchievements(view);\r\n                return;\r\n            case R.id.exit_btn:\r\n                finish();\r\n                System.exit(0);\r\n                return;\r\n            default:\r\n                return;\r\n        }\r\n    }\r\n\r\n    public void goToGamesList(View view){\r\n        animShake.setAnimationListener(new Animation.AnimationListener() {\r\n            @Override\r\n            public void onAnimationStart(Animation animation) {\r\n\r\n            }\r\n\r\n            @Override\r\n            public void onAnimationEnd(Animation arg0) {\r\n                Intent intent = new Intent(MainActivity.this, GamesListActivity.class);\r\n                startActivity(intent);\r\n            }\r\n\r\n            @Override\r\n            public void onAnimationRepeat(Animation animation) {\r\n\r\n            }\r\n        });\r\n        view.startAnimation(animShake);\r\n    }\r\n\r\n    public void showAchievements(View view){\r\n        animShake.setAnimationListener(new Animation.AnimationListener() {\r\n            @Override\r\n            public void onAnimationStart(Animation animation) {\r\n\r\n            }\r\n\r\n            @Override\r\n            public void onAnimationEnd(Animation arg0) {\r\n                Intent intent = new Intent(MainActivity.this, AchievementsActivity.class);\r\n                startActivity(intent);\r\n            }\r\n\r\n            @Override\r\n            public void onAnimationRepeat(Animation animation) {\r\n\r\n            }\r\n        });\r\n        view.startAnimation(animShake);\r\n    }\r\n\r\n    @Override\r\n    protected void onRestart() {\r\n        super.onRestart();\r\n        PreferencesManagement preferencesManagement = new PreferencesManagement(MainActivity.this);\r\n        preferencesManagement.manage();\r\n        System.out.println(\"MainActivity.onRestar()\");\r\n    }\r\n\r\n    private void playBackgroundMusic(){\r\n        Intent intent = new Intent(MainActivity.this, BackgroundSoundService.class);\r\n        startService(intent);\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/android/gramatematyczna/activities/MainActivity.java	(revision 4df75b45e1ad62915bf08e834136029afce2fb7d)
++++ app/src/main/java/com/android/gramatematyczna/activities/MainActivity.java	(date 1610302892082)
+@@ -14,6 +14,7 @@
+ import com.android.gramatematyczna.BackgroundSoundService;
+ import com.android.gramatematyczna.PreferencesManagement;
+ import com.android.gramatematyczna.R;
++import com.android.gramatematyczna.database.DatabaseHelper;
+ 
+ public class MainActivity extends AppCompatActivity {
+ 
+@@ -32,6 +33,12 @@
+ 
+         PreferencesManagement preferencesManagement = new PreferencesManagement(MainActivity.this);
+         preferencesManagement.manage();
++//        preferencesManagement.setMaxHearts();
++
++
++        DatabaseHelper dbHelper = new DatabaseHelper(this);
++        dbHelper.clearData();
++
+ 
+         animShake = AnimationUtils.loadAnimation(this, R.anim.shake);
+         System.out.println("MainActivity.onCreate()");
+Index: app/src/main/java/com/android/gramatematyczna/customdialogs/PauseDialogClass.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.android.gramatematyczna.customdialogs;\r\n\r\nimport android.app.Activity;\r\nimport android.app.Dialog;\r\nimport android.content.Intent;\r\nimport android.os.Bundle;\r\nimport android.view.KeyboardShortcutGroup;\r\nimport android.view.Menu;\r\nimport android.view.View;\r\nimport android.view.Window;\r\nimport android.widget.Button;\r\n\r\nimport androidx.annotation.Nullable;\r\n\r\nimport com.android.gramatematyczna.R;\r\nimport com.android.gramatematyczna.activities.GamesListActivity;\r\nimport com.android.gramatematyczna.activities.MainActivity;\r\n\r\nimport java.util.List;\r\n\r\npublic class PauseDialogClass extends Dialog implements android.view.View.OnClickListener {\r\n    public Activity activity;\r\n    Button homeBtn, resumeBtn, listBtn;\r\n\r\n    public PauseDialogClass(Activity activity) {\r\n        super(activity);\r\n        this.activity = activity;\r\n    }\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        requestWindowFeature(Window.FEATURE_NO_TITLE);\r\n        setContentView(R.layout.pause_dialog);\r\n        homeBtn = (Button) findViewById(R.id.home_btn);\r\n        homeBtn.setOnClickListener(this);\r\n        listBtn = (Button) findViewById(R.id.list_btn);\r\n        listBtn.setOnClickListener(this);\r\n        resumeBtn = (Button) findViewById(R.id.resume_btn);\r\n        resumeBtn.setOnClickListener(this);\r\n\r\n    }\r\n\r\n    @Override\r\n    public void onClick(View view) {\r\n        switch (view.getId()) {\r\n            case R.id.home_btn:\r\n                goToHomeScreen();\r\n                break;\r\n            case R.id.list_btn:\r\n                goToListScreen();\r\n                break;\r\n            case R.id.resume_btn:\r\n                dismiss();\r\n                break;\r\n            default:\r\n                break;\r\n        }\r\n        dismiss();\r\n    }\r\n\r\n    public void goToHomeScreen() {\r\n        Intent intent = new Intent(activity, MainActivity.class);\r\n        activity.startActivity(intent);\r\n    }\r\n\r\n    public void goToListScreen() {\r\n        Intent intent = new Intent(activity, GamesListActivity.class);\r\n        activity.startActivity(intent);\r\n    }\r\n\r\n    @Override\r\n    public void onProvideKeyboardShortcuts(List<KeyboardShortcutGroup> data, @Nullable Menu menu, int deviceId) {\r\n\r\n    }\r\n\r\n    @Override\r\n    public void onPointerCaptureChanged(boolean hasCapture) {\r\n\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/android/gramatematyczna/customdialogs/PauseDialogClass.java	(revision 4df75b45e1ad62915bf08e834136029afce2fb7d)
++++ app/src/main/java/com/android/gramatematyczna/customdialogs/PauseDialogClass.java	(date 1610049156707)
+@@ -31,7 +31,7 @@
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+         requestWindowFeature(Window.FEATURE_NO_TITLE);
+-        setContentView(R.layout.pause_dialog);
++        setContentView(R.layout.dialog_pause);
+         homeBtn = (Button) findViewById(R.id.home_btn);
+         homeBtn.setOnClickListener(this);
+         listBtn = (Button) findViewById(R.id.list_btn);
+@@ -62,11 +62,13 @@
+     public void goToHomeScreen() {
+         Intent intent = new Intent(activity, MainActivity.class);
+         activity.startActivity(intent);
++        activity.finish();
+     }
+ 
+     public void goToListScreen() {
+         Intent intent = new Intent(activity, GamesListActivity.class);
+         activity.startActivity(intent);
++        activity.finish();
+     }
+ 
+     @Override
+diff --git app/src/main/res/layout/pause_dialog.xml app/src/main/res/layout/dialog_pause.xml
+rename from app/src/main/res/layout/pause_dialog.xml
+rename to app/src/main/res/layout/dialog_pause.xml
+diff --git app/src/main/res/layout/end_game_dialog.xml app/src/main/res/layout/dialog_end_game.xml
+rename from app/src/main/res/layout/end_game_dialog.xml
+rename to app/src/main/res/layout/dialog_end_game.xml

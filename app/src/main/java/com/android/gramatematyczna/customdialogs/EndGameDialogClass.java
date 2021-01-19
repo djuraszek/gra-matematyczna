@@ -36,6 +36,7 @@ public class EndGameDialogClass extends Dialog implements View.OnClickListener {
         super(activity);
         this.activity = activity;
         this.goodAnswers = goodAnswers;
+        preferencesManagement = new PreferencesManagement(activity);
     }
 
     @Override
@@ -89,9 +90,11 @@ public class EndGameDialogClass extends Dialog implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.list_btn:
+                stopPlayer();
                 goToListScreen();
                 break;
             case R.id.resume_btn:
+                stopPlayer();
                 playAgain();
                 break;
             default:
@@ -105,8 +108,8 @@ public class EndGameDialogClass extends Dialog implements View.OnClickListener {
     }
 
     public void goToListScreen() {
-        Intent intent = new Intent(activity, GamesListActivity.class);
-        activity.startActivity(intent);
+//        Intent intent = new Intent(activity, GamesListActivity.class);
+//        activity.startActivity(intent);
         dismiss();
         activity.finish();
     }
